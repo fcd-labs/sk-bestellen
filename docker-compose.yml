@@ -34,6 +34,7 @@ services:
     image: showkitchen/bestellen-backend:${APP_VERSION:?run via build.sh}
     # No host port: only reachable inside the Docker network.
     environment:
+      MENU_PATH: /app/menu/menu.yaml
       KITCHEN_URL: http://stub-kitchen:8080
       BAR_URL: http://stub-bar:8080
       CASH_REGISTER_URL: http://stub-cash-register:8080
