@@ -1,0 +1,22 @@
+name: pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Least privilege: the pipeline only reads the repository.
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Pinned to a commit SHA, not a moving tag.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Same script as locally. mvp0 has one environment (local docker-compose),
+      # so the pipeline builds, tests and scans here; deploy runs where that environment is.
+      - run: ./build.sh ci

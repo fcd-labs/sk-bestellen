@@ -29,8 +29,12 @@ Intent voor Claude Code. Showcase van ShowKitchen met één deelproduct, versie 
    - Per gerecht staat in het menu of het in de keuken of aan de bar wordt gemaakt. Elke regel van de bestelling vermeldt dat, zodat keuken en bar zien welke regels voor hen zijn. Ze krijgen nog steeds de hele bestelling.
    - Binnen het deelproduct praten frontend en backend ook volgens een contract in OpenAPI.
 4. Intents: Bestellen.
+5. Techniek in mvp0 (besluiten van de product owner):
+   - Backend in Kotlin met Ktor, gebouwd met Maven. Frontend in Angular.
+   - Geen opslag: het menubestand is de enige data. Bestellingen worden niet bewaard; de gast ziet het resultaat in het antwoord.
+   - Eén omgeving: lokaal met docker-compose. Een GitHub-repository volgt later.
 
-Keuken, bar en kassa bestaan in deze versie als stubs: losse containers, niet onderdeel van het deelproduct Bestellen. Ze ontvangen de bestelling volgens hetzelfde contract.
+Keuken, bar en kassa bestaan in deze versie als stubs: losse containers, niet onderdeel van het deelproduct Bestellen. Ze ontvangen de bestelling volgens hetzelfde contract. Elke stub is een eigen Kotlin-project met Ktor, gebouwd met Maven.
 
 ## Eerste stap: contract en datamodel
 

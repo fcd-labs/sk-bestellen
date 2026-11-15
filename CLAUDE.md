@@ -14,6 +14,17 @@ Bij elk kader geldt comply or explain: wijk je af, leg dan uit waarom. De produc
 |---|---|---|---|
 | Een mens keurt afwijkingen goed. | ? | N | |
 | Wat niet beschreven is, is buiten scope. | | ? | |
+| Secure: alles is veilig, van contract en code tot container, pipeline en omgeving. | Security | ? | |
+| Containers draaien als gewone gebruiker, niet als root, met zo min mogelijk rechten. | Security | ? | |
+| Kleine basis-images met vaste versies. | Security | ? | |
+| Poorten alleen open waar nodig. Lokaal alleen bereikbaar via 127.0.0.1. | Security | ? | |
+| Elke aanvraag wordt gecontroleerd tegen het contract. Prijzen komen uit het menu, nooit van de gast. | Security | ? | |
+| Foutmeldingen geven geen interne details prijs. | Security | ? | |
+| De frontend stuurt beveiligingsheaders mee. | Security | ? | |
+| build.sh scant afhankelijkheden, images en configuratie op kwetsbaarheden en geheimen. Bij een ernstige bevinding stopt de build. | Security | ? | |
+| GitHub Actions: acties op een vaste versie, minimale rechten. | Security | ? | |
+| Versleuteld verkeer (HTTPS). | Security | ? | mvp0: lokale omgeving, geen HTTPS (voorstel, nog goed te keuren) |
+| Inloggen en autorisatie waar gebruikers zijn. | Security | ? | mvp0: de intent kent geen gebruikersaccounts (voorstel, nog goed te keuren) |
 | Contract first: tussen deelproducten eerst het contract, dan de code. Het schema is onderdeel van het contract. Contracten in OpenAPI. | | ? | |
 | Datamodel first: binnen een deelproduct eerst het datamodel, dan de code. | | ? | |
 | Opbouw: micro-frontend (Angular), UX-API (Kotlin), backend (Kotlin), datastore | Architectuur | ? | mvp0: frontend en backend |

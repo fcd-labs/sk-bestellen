@@ -1,0 +1,39 @@
+# Sub-product Bestellen: the unit of deployment. Always deployed as a whole.
+# Version comes from the VERSION file (set by build.sh as APP_VERSION).
+name: showkitchen
+
+# Least privilege for every container.
+x-hardening: &hardening
+  read_only: true
+  tmpfs:
+    - /tmp
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  restart: unless-stopped
+
+services:
+  bestellen-frontend:
+    <<: *hardening
+    build:
+      context: ./bestellen/frontend
+    image: showkitchen/bestellen-frontend:${APP_VERSION:?run via build.sh}
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      - bestellen-backend
+
+  bestellen-backend:
+    <<: *hardening
+    build:
+      context: ./bestellen
+      dockerfile: backend/Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:?run via build.sh}
+    image: showkitchen/bestellen-backend:${APP_VERSION:?run via build.sh}
+    # No host port: only reachable inside the Docker network.
+    environment:
+      KITCHEN_URL: http://stub-kitchen:8080
+      BAR_URL: http://stub-bar:8080
+      CASH_REGISTER_URL: http://stub-cash-register:8080

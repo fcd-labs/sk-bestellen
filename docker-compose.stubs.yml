@@ -1,0 +1,47 @@
+# Stubs for kitchen, bar and cash register.
+# Separate containers, NOT part of the Bestellen sub-product.
+# They receive the order according to contracts/order.openapi.yaml.
+# Host ports (localhost only) are there to see what each stub received.
+name: showkitchen
+
+# Least privilege for every container.
+x-hardening: &hardening
+  read_only: true
+  tmpfs:
+    - /tmp
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  restart: unless-stopped
+
+services:
+  stub-kitchen:
+    <<: *hardening
+    build:
+      context: ./stubs/kitchen
+      args:
+        APP_VERSION: ${APP_VERSION:?run via build.sh}
+    image: showkitchen/stub-kitchen:${APP_VERSION:?run via build.sh}
+    ports:
+      - "127.0.0.1:8091:8080"
+
+  stub-bar:
+    <<: *hardening
+    build:
+      context: ./stubs/bar
+      args:
+        APP_VERSION: ${APP_VERSION:?run via build.sh}
+    image: showkitchen/stub-bar:${APP_VERSION:?run via build.sh}
+    ports:
+      - "127.0.0.1:8092:8080"
+
+  stub-cash-register:
+    <<: *hardening
+    build:
+      context: ./stubs/cash-register
+      args:
+        APP_VERSION: ${APP_VERSION:?run via build.sh}
+    image: showkitchen/stub-cash-register:${APP_VERSION:?run via build.sh}
+    ports:
+      - "127.0.0.1:8093:8080"

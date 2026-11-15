@@ -87,7 +87,7 @@ paths:
           content:
             application/problem+json:
               schema:
-                $ref: './order.openapi.yaml#/components/schemas/Problem'
+                $ref: '../../contracts/order.openapi.yaml#/components/schemas/Problem'
 components:
   schemas:
     PlaceOrderRequest:
@@ -96,7 +96,7 @@ components:
       required: [tableNumber, lines]
       properties:
         tableNumber:
-          $ref: './order.openapi.yaml#/components/schemas/TableNumber'
+          $ref: '../../contracts/order.openapi.yaml#/components/schemas/TableNumber'
         lines:
           type: array
           minItems: 1
@@ -122,7 +122,7 @@ components:
       required: [order, deliveries]
       properties:
         order:
-          $ref: './order.openapi.yaml#/components/schemas/Order'
+          $ref: '../../contracts/order.openapi.yaml#/components/schemas/Order'
         deliveries:
           type: array
           minItems: 3

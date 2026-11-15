@@ -1,1 +1,7 @@
 .claude/settings.local.json
+
+# Build output (Maven)
+target/
+
+# Scan output of build.sh
+.scan/
