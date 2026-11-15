@@ -9,6 +9,8 @@ COPY backend/src ./src
 RUN mvn -B -Daether.connector.http.retryHandler.count=5 package -Drevision=${APP_VERSION}
 
 FROM eclipse-temurin:21-jre-alpine@sha256:ac05c3c42b7c2f1a52c9bd52f01041fa1958231b15ebeae7420429cbc5baf474
+# Apply Alpine security fixes released after the base image was built.
+RUN apk upgrade --no-cache
 WORKDIR /app
 COPY --from=build /src/target/app.jar /app/app.jar
 # Run as an unprivileged user, not root.

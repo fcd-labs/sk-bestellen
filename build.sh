@@ -38,8 +38,10 @@ build() {
 scan() {
   echo "==> Scan repository (dependencies, secrets, configuration)"
   mkdir -p "$SCAN_DIR"
+  # --offline-scan: do not fetch poms from Maven Central (rate limits).
+  # Java dependencies are fully checked in the image scan (they are in app.jar).
   trivy fs --quiet --exit-code 1 --severity HIGH,CRITICAL \
-    --scanners vuln,secret,misconfig \
+    --scanners vuln,secret,misconfig --offline-scan \
     --skip-dirs /repo/bestellen/frontend/node_modules \
     --skip-dirs /repo/.scan \
     /repo

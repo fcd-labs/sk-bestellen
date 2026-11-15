@@ -1,5 +1,9 @@
 .claude/settings.local.json
 
+# Local environment files (may contain secrets)
+.env
+.env.local
+
 # Build output (Maven)
 target/
 
