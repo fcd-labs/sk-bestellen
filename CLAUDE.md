@@ -28,7 +28,7 @@ Bij elk kader geldt comply or explain: wijk je af, leg dan uit waarom. De produc
 | Contract first: tussen deelproducten eerst het contract, dan de code. Het schema is onderdeel van het contract. Contracten in OpenAPI. | | ? | |
 | Datamodel first: binnen een deelproduct eerst het datamodel, dan de code. | | ? | |
 | Opbouw: micro-frontend (Angular), UX-API (Kotlin), backend (Kotlin), datastore | Architectuur | ? | mvp0: frontend en backend |
-| Database: PostgreSQL | Architectuur | ? | mvp0: bestand |
+| Database: PostgreSQL | Architectuur | ? | mvp0: geen opslag, het menu is een bestand |
 | Containerization | | J | |
 | Docker-compose | | ? | |
 | Kubernetes | | J | mvp0: docker-compose |
