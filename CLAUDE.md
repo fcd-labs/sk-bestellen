@@ -14,6 +14,7 @@ Bij elk kader geldt comply or explain: wijk je af, leg dan uit waarom. De produc
 |---|---|---|---|
 | Een mens keurt afwijkingen goed. | ? | N | |
 | Wat niet beschreven is, is buiten scope. | | ? | |
+| Technische keuzes die niet in de kaders staan, legt Claude Code eerst voor aan de product owner. | | ? | |
 | Secure: alles is veilig, van contract en code tot container, pipeline en omgeving. | Security | ? | |
 | Containers draaien als gewone gebruiker, niet als root, met zo min mogelijk rechten. | Security | ? | |
 | Kleine basis-images met vaste versies. | Security | ? | |
