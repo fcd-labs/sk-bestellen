@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://showkitchen.example/schemas/menu.schema.json",
+  "title": "Menu",
+  "description": "Data model of the menu of the Bestellen sub-product. The menu is a fixed, declarative file in the repository; changing it goes through the pipeline.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "currency", "categories"],
+  "properties": {
+    "version": {
+      "description": "Version of this menu file. Changes with every menu change.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "currency": {
+      "description": "ISO 4217 currency code for all prices in this menu.",
+      "type": "string",
+      "const": "EUR"
+    },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Category" }
+    }
+  },
+  "$defs": {
+    "Id": {
+      "description": "Stable identifier in kebab-case. Unique within the menu.",
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "Category": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "items"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" },
+        "name": {
+          "description": "Name shown to the guest.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/MenuItem" }
+        }
+      }
+    },
+    "MenuItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "priceCents", "station"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" },
+        "name": {
+          "description": "Name shown to the guest.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "description": {
+          "description": "Optional short description shown to the guest.",
+          "type": "string",
+          "maxLength": 300
+        },
+        "priceCents": {
+          "description": "Price per unit in cents, including VAT.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "station": { "$ref": "#/$defs/Station" }
+      }
+    },
+    "Station": {
+      "description": "Where the menu item is prepared: in the kitchen or at the bar.",
+      "type": "string",
+      "enum": ["kitchen", "bar"]
+    }
+  }
+}

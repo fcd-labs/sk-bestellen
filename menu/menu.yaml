@@ -1,0 +1,70 @@
+# Example menu for the Bestellen sub-product.
+# Validated against menu.schema.json. Changing the menu goes through the pipeline.
+version: 0.1.0
+currency: EUR
+categories:
+  - id: starters
+    name: Voorgerechten
+    items:
+      - id: tomato-soup
+        name: Tomatensoep
+        description: Huisgemaakte tomatensoep met basilicum
+        priceCents: 650
+        station: kitchen
+      - id: beef-carpaccio
+        name: Carpaccio
+        description: Rundercarpaccio met rucola, pijnboompitten en Parmezaan
+        priceCents: 1150
+        station: kitchen
+
+  - id: mains
+    name: Hoofdgerechten
+    items:
+      - id: fish-of-the-day
+        name: Vis van de dag
+        description: Met seizoensgroenten en aardappelpuree
+        priceCents: 2350
+        station: kitchen
+      - id: mushroom-risotto
+        name: Paddenstoelenrisotto
+        description: Vegetarisch, met truffelolie
+        priceCents: 1950
+        station: kitchen
+      - id: steak
+        name: Biefstuk
+        description: Met friet en pepersaus
+        priceCents: 2450
+        station: kitchen
+
+  - id: desserts
+    name: Desserts
+    items:
+      - id: dame-blanche
+        name: Dame blanche
+        priceCents: 750
+        station: kitchen
+      - id: cheese-platter
+        name: Kaasplankje
+        description: Drie Nederlandse kazen met vijgenbrood
+        priceCents: 1050
+        station: kitchen
+
+  - id: drinks
+    name: Dranken
+    items:
+      - id: sparkling-water
+        name: Spa rood
+        priceCents: 300
+        station: bar
+      - id: cola
+        name: Cola
+        priceCents: 320
+        station: bar
+      - id: draught-beer
+        name: Bier van de tap
+        priceCents: 380
+        station: bar
+      - id: house-wine-red
+        name: Huiswijn rood (glas)
+        priceCents: 550
+        station: bar

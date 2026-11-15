@@ -1,0 +1,147 @@
+openapi: 3.1.0
+info:
+  title: Bestellen API
+  version: 0.1.0
+  description: |
+    Contract between the frontend and the backend of the Bestellen
+    sub-product. Internal to the sub-product.
+
+    The guest picks menu items by id and quantity. The backend takes names
+    and prices from the menu file, builds the whole order (order contract)
+    and sends it to kitchen, bar and cash register.
+tags:
+  - name: menu
+  - name: orders
+paths:
+  /menu:
+    get:
+      tags: [menu]
+      operationId: getMenu
+      summary: Get the menu
+      responses:
+        '200':
+          description: The current menu.
+          content:
+            application/json:
+              schema:
+                $ref: '../menu/menu.schema.json'
+  /orders:
+    post:
+      tags: [orders]
+      operationId: placeOrder
+      summary: Place an order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOrderRequest'
+            example:
+              tableNumber: 12
+              lines:
+                - menuItemId: tomato-soup
+                  quantity: 2
+                - menuItemId: draught-beer
+                  quantity: 2
+      responses:
+        '201':
+          description: |
+            The order is placed. `deliveries` shows per receiver whether the
+            order has been sent to it.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlacedOrder'
+              example:
+                order:
+                  orderId: 3f2b8c1e-6a4d-4e7b-9c0a-1d2e3f4a5b6c
+                  placedAt: '2026-11-15T19:42:00Z'
+                  tableNumber: 12
+                  currency: EUR
+                  lines:
+                    - menuItemId: tomato-soup
+                      name: Tomatensoep
+                      station: kitchen
+                      quantity: 2
+                      unitPriceCents: 650
+                      lineTotalCents: 1300
+                    - menuItemId: draught-beer
+                      name: Bier van de tap
+                      station: bar
+                      quantity: 2
+                      unitPriceCents: 380
+                      lineTotalCents: 760
+                  totalCents: 2060
+                deliveries:
+                  - receiver: kitchen
+                    status: delivered
+                    receivedAt: '2026-11-15T19:42:01Z'
+                  - receiver: bar
+                    status: delivered
+                    receivedAt: '2026-11-15T19:42:01Z'
+                  - receiver: cash-register
+                    status: delivered
+                    receivedAt: '2026-11-15T19:42:01Z'
+        '400':
+          description: Invalid request, for example an unknown menu item.
+          content:
+            application/problem+json:
+              schema:
+                $ref: './order.openapi.yaml#/components/schemas/Problem'
+components:
+  schemas:
+    PlaceOrderRequest:
+      type: object
+      additionalProperties: false
+      required: [tableNumber, lines]
+      properties:
+        tableNumber:
+          $ref: './order.openapi.yaml#/components/schemas/TableNumber'
+        lines:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/PlaceOrderLine'
+    PlaceOrderLine:
+      type: object
+      additionalProperties: false
+      required: [menuItemId, quantity]
+      properties:
+        menuItemId:
+          description: Id of the menu item, as in the menu.
+          type: string
+          pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'
+          maxLength: 64
+        quantity:
+          type: integer
+          minimum: 1
+          maximum: 99
+    PlacedOrder:
+      type: object
+      additionalProperties: false
+      required: [order, deliveries]
+      properties:
+        order:
+          $ref: './order.openapi.yaml#/components/schemas/Order'
+        deliveries:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/Delivery'
+    Delivery:
+      description: Result of sending the order to one receiver.
+      type: object
+      additionalProperties: false
+      required: [receiver, status]
+      properties:
+        receiver:
+          type: string
+          enum: [kitchen, bar, cash-register]
+        status:
+          type: string
+          enum: [delivered, failed]
+        receivedAt:
+          description: Present when status is delivered; taken from the receiver's receipt.
+          type: string
+          format: date-time
