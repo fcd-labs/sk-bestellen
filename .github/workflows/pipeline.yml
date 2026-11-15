@@ -17,6 +17,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      # Same script as locally. mvp0 has one environment (local docker-compose),
-      # so the pipeline builds, tests and scans here; deploy runs where that environment is.
+      # Same script as locally. Builds, tests and scans, then deploys on this runner
+      # only to run the end-to-end tests. The mvp0 environment itself is local.
       - run: ./build.sh ci
