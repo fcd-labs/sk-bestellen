@@ -4,9 +4,14 @@ Wijzigingen van het deelproduct Bestellen, per versie. Formaat: [Keep a Changelo
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-20
+
 ### Gewijzigd
 - Gebouwd met de Pipeline van FCD (`fcd-pipeline`); stappen, gates, drempels en afwijkingen staan in de configuratie van de showcase (`fcd-demo/fcd`). `explains.yaml` is weg.
 - Poorten en het adres van het Dashboard komen uit de omgeving van de showcase.
+
+### Opgelost
+- De meting van het key result zette de showcase vast op `demo`; nu uit de omgeving (`FCD_SHOWCASE`). Gevonden doordat het Dashboard van een andere showcase de logregel weigerde.
 
 ## [0.3.0] - 2026-11-20
 

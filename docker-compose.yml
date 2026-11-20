@@ -40,6 +40,7 @@ services:
       CASH_REGISTER_URL: http://stub-cash-register:8080
       # Key result: every order is measured and sent to the Dashboard (fcd-demo) on this machine.
       DASHBOARD_EVENTS_URL: ${DASHBOARD_EVENTS_URL:?run via fcd (Dashboard of the showcase)}
+      FCD_SHOWCASE: ${FCD_SHOWCASE:?run via fcd (showcase)}
       FCD_EXPERIMENT: ${FCD_EXPERIMENT:-mvp0}
       FCD_ENVIRONMENT: ${FCD_ENVIRONMENT:-lokaal}
       SUBPRODUCT_VERSION: ${SUBPRODUCT_VERSION:?run via fcd (versions.env)}

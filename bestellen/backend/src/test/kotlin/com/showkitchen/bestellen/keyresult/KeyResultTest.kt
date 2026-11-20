@@ -29,6 +29,7 @@ class KeyResultTest {
         )
     private val context =
         KeyResultContext(
+            showcase = "classic",
             experiment = "mvp0",
             environment = "lokaal",
             subProductVersion = "0.2.0",
@@ -74,7 +75,7 @@ class KeyResultTest {
         assertEquals("0.2.0", custom["subProduct"]["version"].asText())
         assertEquals("0.2.0", custom["subProduct"]["containers"]["bestellen-backend"].asText())
         assertEquals("guest", custom["trigger"]["kind"].asText())
-        assertEquals("demo", custom["showcase"].asText())
+        assertEquals("classic", custom["showcase"].asText())
         assertEquals("mvp0", custom["experiment"].asText())
         assertEquals("lokaal", custom["environment"].asText())
         assertEquals("", custom["run"].asText())
