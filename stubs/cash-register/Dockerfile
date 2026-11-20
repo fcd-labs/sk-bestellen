@@ -15,7 +15,7 @@ COPY --from=build /src/target/surefire-reports/ /
 FROM build AS checked
 RUN ls target/surefire-reports/TEST-*.xml >/dev/null && ! grep -qE '<(failure|error)[ >]' target/surefire-reports/TEST-*.xml
 
-FROM eclipse-temurin:21-jre-alpine@sha256:ac05c3c42b7c2f1a52c9bd52f01041fa1958231b15ebeae7420429cbc5baf474
+FROM eclipse-temurin:25-jre-alpine@sha256:e1898fd6a11fc965a994d8ace186fd3585aeb636cf8f05f47a723fcfee0b0918
 # Apply Alpine security fixes released after the base image was built.
 RUN apk upgrade --no-cache
 WORKDIR /app
