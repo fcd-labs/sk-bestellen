@@ -1,0 +1,9 @@
+# Security
+
+Meld een kwetsbaarheid via **Security → Report a vulnerability** in deze repository (privé). Maak er geen openbaar issue van. Je krijgt binnen een week antwoord.
+
+## Log
+
+| Datum | Actie |
+|---|---|
+| 2026-11-20 | nginx bijgewerkt van 1.30.6 naar 1.30.7 (4 kritieke en 2 hoge kwetsbaarheden). Scan van repository en images: geen bekende kwetsbaarheden. Bestellen 0.1.0 (nog niet gereleased). |

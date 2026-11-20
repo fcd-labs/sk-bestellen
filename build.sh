@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# The only way to build and deploy. GitHub Actions calls this same script.
+# The only way to build and deploy (until the fcd-demo Pipeline replaces it).
 #
 #   ./build.sh build    build all images; unit tests run inside the image build
 #   ./build.sh scan     scan repository and images for vulnerabilities, secrets and misconfiguration
 #   ./build.sh deploy   deploy the whole sub-product plus the stubs (docker-compose)
 #   ./build.sh e2e      run the end-to-end tests (Playwright) against the deployed environment
-#   ./build.sh ci       build, scan, deploy, e2e (what GitHub Actions runs, on its own runner)
 #   ./build.sh all      build, scan, deploy, e2e (default)
 #
 # A HIGH or CRITICAL finding stops the script, so nothing insecure is deployed.
@@ -91,10 +90,9 @@ case "${1:-all}" in
   scan)   scan ;;
   deploy) deploy ;;
   e2e)    e2e ;;
-  ci)     build; scan; deploy; e2e ;;
   all)    build; scan; deploy; e2e ;;
   *)
-    echo "Usage: $0 [build|scan|deploy|e2e|ci|all]" >&2
+    echo "Usage: $0 [build|scan|deploy|e2e|all]" >&2
     exit 1
     ;;
 esac
