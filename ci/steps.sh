@@ -5,7 +5,7 @@
 
 CI_COMPOSE_FILES="docker-compose.yml docker-compose.stubs.yml"
 CI_SUBPRODUCT_CONTAINERS="bestellen-frontend bestellen-backend"
-CI_OPENAPI="contracts/order.openapi.yaml bestellen/contracts/bestellen-api.openapi.yaml"
+# The contracts (and their compatibility rule) are in the configuration of the showcase (kind: Contract).
 # Contract checks in the integration step: name=spec@url (inside the network of the environment)
 CI_CONTRACT_TARGETS="bestellen-backend=bestellen/contracts/bestellen-api.openapi.yaml@http://bestellen-backend:8080
 stub-kitchen=contracts/order.openapi.yaml@http://stub-kitchen:8080
