@@ -2,12 +2,20 @@ package com.showkitchen.stubs.bar
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonValue
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonToken
+import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.databind.json.JsonMapper
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer
+import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import java.time.Instant
 import java.util.UUID
@@ -32,7 +40,9 @@ data class OrderLine(
     val lineTotalCents: Int,
 )
 
-enum class Station(@get:JsonValue val value: String) {
+enum class Station(
+    @get:JsonValue val value: String,
+) {
     KITCHEN("kitchen"),
     BAR("bar"),
 }
@@ -44,7 +54,9 @@ data class OrderReceipt(
 )
 
 /** The order does not conform to the contract. The message is safe to show. */
-class InvalidOrderException(message: String) : RuntimeException(message)
+class InvalidOrderException(
+    message: String,
+) : RuntimeException(message)
 
 private val menuItemIdPattern = Regex("^[a-z0-9]+(-[a-z0-9]+)*$")
 
@@ -66,15 +78,34 @@ fun Order.validate() {
 
 /** One strict JSON mapper: what does not conform to the contract is rejected, not guessed. */
 object Json {
-    val mapper: ObjectMapper = JsonMapper.builder()
-        .addModule(kotlinModule())
-        .addModule(JavaTimeModule())
-        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-        .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-        .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
-        .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
-        .disable(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
-        .disable(MapperFeature.ALLOW_COERCION_OF_SCALARS)
-        .serializationInclusion(JsonInclude.Include.NON_NULL)
-        .build()
+    val mapper: ObjectMapper =
+        JsonMapper
+            .builder()
+            .addModule(kotlinModule { enable(KotlinFeature.NewStrictNullChecks) })
+            .addModule(JavaTimeModule())
+            // placedAt is a string (date-time) in the contract: no epoch numbers.
+            .addModule(SimpleModule().addDeserializer(Instant::class.java, StrictInstantDeserializer))
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
+            .disable(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
+            .disable(MapperFeature.ALLOW_COERCION_OF_SCALARS)
+            .serializationInclusion(JsonInclude.Include.NON_NULL)
+            .build()
+}
+
+/** Accepts only a date-time string for an Instant (as in the contract), never an epoch number. */
+private object StrictInstantDeserializer : StdDeserializer<Instant>(Instant::class.java) {
+    private fun readResolve(): Any = StrictInstantDeserializer
+
+    override fun deserialize(
+        p: JsonParser,
+        ctxt: DeserializationContext,
+    ): Instant {
+        if (!p.hasToken(JsonToken.VALUE_STRING)) {
+            throw MismatchedInputException.from(p, Instant::class.java, "Expected a date-time string.")
+        }
+        return InstantDeserializer.INSTANT.deserialize(p, ctxt)
+    }
 }

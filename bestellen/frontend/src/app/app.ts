@@ -33,7 +33,10 @@ export class App {
   );
 
   protected readonly totalCents = computed(() =>
-    this.items().reduce((sum, item) => sum + (this.quantities()[item.id] ?? 0) * item.priceCents, 0),
+    this.items().reduce(
+      (sum, item) => sum + (this.quantities()[item.id] ?? 0) * item.priceCents,
+      0,
+    ),
   );
 
   protected readonly tableValid = computed(() => {

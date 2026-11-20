@@ -2,7 +2,7 @@
 # Separate containers, NOT part of the Bestellen sub-product.
 # They receive the order according to contracts/order.openapi.yaml.
 # Host ports (localhost only) are there to see what each stub received.
-name: showkitchen
+name: sk-demo
 
 # Least privilege for every container.
 x-hardening: &hardening
@@ -21,8 +21,8 @@ services:
     build:
       context: ./stubs/kitchen
       args:
-        APP_VERSION: ${APP_VERSION:?run via build.sh}
-    image: showkitchen/stub-kitchen:${APP_VERSION:?run via build.sh}
+        APP_VERSION: ${STUB_KITCHEN_VERSION:?run via fcd (versions.env)}
+    image: showkitchen/stub-kitchen:${STUB_KITCHEN_VERSION:?run via fcd (versions.env)}
     ports:
       - "127.0.0.1:8091:8080"
 
@@ -31,8 +31,8 @@ services:
     build:
       context: ./stubs/bar
       args:
-        APP_VERSION: ${APP_VERSION:?run via build.sh}
-    image: showkitchen/stub-bar:${APP_VERSION:?run via build.sh}
+        APP_VERSION: ${STUB_BAR_VERSION:?run via fcd (versions.env)}
+    image: showkitchen/stub-bar:${STUB_BAR_VERSION:?run via fcd (versions.env)}
     ports:
       - "127.0.0.1:8092:8080"
 
@@ -41,7 +41,7 @@ services:
     build:
       context: ./stubs/cash-register
       args:
-        APP_VERSION: ${APP_VERSION:?run via build.sh}
-    image: showkitchen/stub-cash-register:${APP_VERSION:?run via build.sh}
+        APP_VERSION: ${STUB_CASH_REGISTER_VERSION:?run via fcd (versions.env)}
+    image: showkitchen/stub-cash-register:${STUB_CASH_REGISTER_VERSION:?run via fcd (versions.env)}
     ports:
       - "127.0.0.1:8093:8080"

@@ -28,7 +28,9 @@ data class Delivery(
     val receivedAt: Instant? = null,
 )
 
-enum class DeliveryStatus(@get:JsonValue val value: String) {
+enum class DeliveryStatus(
+    @get:JsonValue val value: String,
+) {
     DELIVERED("delivered"),
     FAILED("failed"),
 }
@@ -59,11 +61,15 @@ data class OrderReceipt(
     val receivedAt: Instant,
 )
 
-enum class Receiver(@get:JsonValue val value: String) {
+enum class Receiver(
+    @get:JsonValue val value: String,
+) {
     KITCHEN("kitchen"),
     BAR("bar"),
     CASH_REGISTER("cash-register"),
 }
 
 /** The request does not conform to the contract. The message is safe to show to the guest. */
-class InvalidOrderException(message: String) : RuntimeException(message)
+class InvalidOrderException(
+    message: String,
+) : RuntimeException(message)

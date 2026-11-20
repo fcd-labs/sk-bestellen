@@ -13,7 +13,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class MenuLoaderTest {
-
     private val menuPath = Path.of("../menu/menu.yaml")
     private val schemaPath = Path.of("../menu/menu.schema.json")
 
@@ -47,7 +46,8 @@ class MenuLoaderTest {
 
     @Test
     fun `data model rejects a menu item without station`() {
-        val menu = """
+        val menu =
+            """
             version: 0.1.0
             currency: EUR
             categories:
@@ -57,15 +57,16 @@ class MenuLoaderTest {
                   - id: cola
                     name: Cola
                     priceCents: 320
-        """.trimIndent()
+            """.trimIndent()
 
         assertTrue(validate(menu).isNotEmpty())
     }
 
     private fun validate(yaml: String): Set<*> {
-        val schema = Files.newInputStream(schemaPath).use {
-            JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012).getSchema(it)
-        }
+        val schema =
+            Files.newInputStream(schemaPath).use {
+                JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012).getSchema(it)
+            }
         val node = ObjectMapper(YAMLFactory()).readTree(yaml)
         return schema.validate(node)
     }

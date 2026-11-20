@@ -7,14 +7,22 @@ COPY backend/pom.xml .
 RUN mvn -B -q -Daether.connector.http.retryHandler.count=5 dependency:go-offline
 COPY menu /work/menu
 COPY backend/src ./src
-# 'package' runs the unit and integration tests; the image is only made when they pass.
-RUN mvn -B -Daether.connector.http.retryHandler.count=5 package -Drevision=${APP_VERSION}
+# Unit tests (CI step 2) run in 'package'. Reports are kept; the result is checked in the
+# 'checked' stage, so the image is only made when all tests pass.
+RUN mvn -B -Daether.connector.http.retryHandler.count=5 package -Drevision=${APP_VERSION} -Dmaven.test.failure.ignore=true
+
+# Test reports only: exported by the pipeline (docker build --target test-reports --output ...).
+FROM scratch AS test-reports
+COPY --from=build /work/backend/target/surefire-reports/ /
+
+FROM build AS checked
+RUN ls target/surefire-reports/TEST-*.xml >/dev/null && ! grep -qE '<(failure|error)[ >]' target/surefire-reports/TEST-*.xml
 
 FROM eclipse-temurin:21-jre-alpine@sha256:ac05c3c42b7c2f1a52c9bd52f01041fa1958231b15ebeae7420429cbc5baf474
 # Apply Alpine security fixes released after the base image was built.
 RUN apk upgrade --no-cache
 WORKDIR /app
-COPY --from=build /work/backend/target/app.jar /app/app.jar
+COPY --from=checked /work/backend/target/app.jar /app/app.jar
 # The menu is a fixed, declarative file; changing it goes through the pipeline.
 COPY menu/menu.yaml /app/menu/menu.yaml
 # Run as an unprivileged user, not root.

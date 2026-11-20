@@ -9,3 +9,7 @@ target/
 
 # Scan output of build.sh
 .scan/
+
+# Pipeline runs (fcd)
+.fcd/
+.DS_Store

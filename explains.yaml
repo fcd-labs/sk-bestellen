@@ -1,0 +1,9 @@
+# Approved deviations (explain) on a quality gate threshold. Approver: the product owner.
+# An entry counts until its end date; after that the gate is strict again.
+#
+# - id: EXP-001
+#   gate: security            # code | build | security | deploy
+#   rule: "..."
+#   reason: "..."
+#   approver: Johannes
+#   until: 2026-12-31

@@ -19,18 +19,20 @@ class OrderFactory(
 
     fun create(request: PlaceOrderRequest): Order {
         validate(request)
-        val lines = request.lines.map { line ->
-            val item = menu.findItem(line.menuItemId)
-                ?: throw InvalidOrderException("Unknown menu item: ${line.menuItemId}")
-            OrderLine(
-                menuItemId = item.id,
-                name = item.name,
-                station = item.station,
-                quantity = line.quantity,
-                unitPriceCents = item.priceCents,
-                lineTotalCents = line.quantity * item.priceCents,
-            )
-        }
+        val lines =
+            request.lines.map { line ->
+                val item =
+                    menu.findItem(line.menuItemId)
+                        ?: throw InvalidOrderException("Unknown menu item: ${line.menuItemId}")
+                OrderLine(
+                    menuItemId = item.id,
+                    name = item.name,
+                    station = item.station,
+                    quantity = line.quantity,
+                    unitPriceCents = item.priceCents,
+                    lineTotalCents = line.quantity * item.priceCents,
+                )
+            }
         return Order(
             orderId = newOrderId(),
             placedAt = Instant.now(clock).truncatedTo(ChronoUnit.SECONDS),
