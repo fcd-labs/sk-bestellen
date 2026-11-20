@@ -1,5 +1,5 @@
 # Build context: bestellen/ (so the menu file is part of the image).
-FROM maven:3.9-eclipse-temurin-21-alpine@sha256:308cba8b638ed7e4658cea3f8399066219466211c805f6d5728c3c9c7614661b AS build
+FROM maven:3.9-eclipse-temurin-26-alpine@sha256:4c85d516dd8c7e50d49a403d604e565e0dbb09a790186fe3245725d313ae7cb9 AS build
 ARG APP_VERSION=0.0.0-dev
 # Same layout as the repository: the tests read ../menu/menu.yaml.
 WORKDIR /work/backend
