@@ -2,7 +2,7 @@
 # Separate containers, NOT part of the Bestellen sub-product.
 # They receive the order according to contracts/order.openapi.yaml.
 # Host ports (localhost only) are there to see what each stub received.
-name: sk-demo
+# The project name (per showcase) is given by fcd: <prefix>-<sub-product>.
 
 # Least privilege for every container.
 x-hardening: &hardening
@@ -24,7 +24,7 @@ services:
         APP_VERSION: ${STUB_KITCHEN_VERSION:?run via fcd (versions.env)}
     image: showkitchen/stub-kitchen:${STUB_KITCHEN_VERSION:?run via fcd (versions.env)}
     ports:
-      - "127.0.0.1:8091:8080"
+      - "127.0.0.1:${PORT_STUB_KITCHEN:?run via fcd (environment of the showcase)}:8080"
 
   stub-bar:
     <<: *hardening
@@ -34,7 +34,7 @@ services:
         APP_VERSION: ${STUB_BAR_VERSION:?run via fcd (versions.env)}
     image: showkitchen/stub-bar:${STUB_BAR_VERSION:?run via fcd (versions.env)}
     ports:
-      - "127.0.0.1:8092:8080"
+      - "127.0.0.1:${PORT_STUB_BAR:?run via fcd (environment of the showcase)}:8080"
 
   stub-cash-register:
     <<: *hardening
@@ -44,4 +44,4 @@ services:
         APP_VERSION: ${STUB_CASH_REGISTER_VERSION:?run via fcd (versions.env)}
     image: showkitchen/stub-cash-register:${STUB_CASH_REGISTER_VERSION:?run via fcd (versions.env)}
     ports:
-      - "127.0.0.1:8093:8080"
+      - "127.0.0.1:${PORT_STUB_CASH_REGISTER:?run via fcd (environment of the showcase)}:8080"

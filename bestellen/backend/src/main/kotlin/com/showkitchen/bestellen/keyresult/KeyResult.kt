@@ -35,8 +35,9 @@ fun interface KeyResultMeter {
     }
 }
 
-/** Where the measurement belongs: experiment, environment and versions (from the deployment). */
+/** Where the measurement belongs: showcase, experiment, environment and versions (from the deployment, set by fcd). */
 data class KeyResultContext(
+    val showcase: String,
     val experiment: String,
     val environment: String,
     val subProductVersion: String,
@@ -93,7 +94,7 @@ object KeyResultEvent {
                 val c = putObject("containers")
                 context.containers.forEach { (k, v) -> c.put(k, v) }
             }
-            put("showcase", "demo")
+            put("showcase", context.showcase)
             put("experiment", context.experiment)
             put("environment", context.environment)
         }

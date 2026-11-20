@@ -61,6 +61,7 @@ fun main() {
             HttpKeyResultMeter(
                 url,
                 KeyResultContext(
+                    showcase = env("FCD_SHOWCASE"),
                     experiment = env("FCD_EXPERIMENT", "mvp0"),
                     environment = env("FCD_ENVIRONMENT", "lokaal"),
                     subProductVersion = env("SUBPRODUCT_VERSION", "0.0.0"),

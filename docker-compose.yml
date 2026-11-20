@@ -1,6 +1,6 @@
 # Sub-product Bestellen: the unit of deployment. Always deployed as a whole.
 # Versions come from versions.env (the pipeline passes it with --env-file).
-name: sk-demo
+# The project name (per showcase) is given by fcd: <prefix>-<sub-product>.
 
 # Least privilege for every container.
 x-hardening: &hardening
@@ -20,7 +20,7 @@ services:
       context: ./bestellen/frontend
     image: showkitchen/bestellen-frontend:${BESTELLEN_FRONTEND_VERSION:?run via fcd (versions.env)}
     ports:
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:${PORT_BESTELLEN:?run via fcd (environment of the showcase)}:8080"
     depends_on:
       - bestellen-backend
 
@@ -39,7 +39,8 @@ services:
       BAR_URL: http://stub-bar:8080
       CASH_REGISTER_URL: http://stub-cash-register:8080
       # Key result: every order is measured and sent to the Dashboard (fcd-demo) on this machine.
-      DASHBOARD_EVENTS_URL: ${DASHBOARD_EVENTS_URL:-http://host.docker.internal:8070/api/v1/events}
+      DASHBOARD_EVENTS_URL: ${DASHBOARD_EVENTS_URL:?run via fcd (Dashboard of the showcase)}
+      FCD_SHOWCASE: ${FCD_SHOWCASE:?run via fcd (showcase)}
       FCD_EXPERIMENT: ${FCD_EXPERIMENT:-mvp0}
       FCD_ENVIRONMENT: ${FCD_ENVIRONMENT:-lokaal}
       SUBPRODUCT_VERSION: ${SUBPRODUCT_VERSION:?run via fcd (versions.env)}
