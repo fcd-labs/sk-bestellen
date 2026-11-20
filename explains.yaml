@@ -7,3 +7,11 @@
 #   reason: "..."
 #   approver: Johannes
 #   until: 2026-12-31
+
+- id: EXP-001
+  gate: security
+  rule: "versheid"
+  reason: "Frontend loopt een major-versie achter (Angular 21 -> 22, TypeScript 5.9 -> 7, vitest 4 -> 5, jsdom 28 -> 31). Bijwerken na de demo (issue in fcd-demo)."
+  approver: Johannes
+  approved: 2026-11-20
+  until: 2026-12-31

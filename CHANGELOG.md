@@ -4,6 +4,8 @@ Wijzigingen van het deelproduct Bestellen, per versie. Formaat: [Keep a Changelo
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-20
+
 ### Toegevoegd
 - Bestellen: de gast kiest uit het menu, geeft het tafelnummer op en de bestelling gaat naar keuken, bar en kassa (intent sk-1dp-mvp0).
 - Stubs voor keuken, bar en kassa, volgens het contract van de bestelling.
