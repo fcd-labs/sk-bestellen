@@ -1,6 +1,6 @@
 # Sub-product Bestellen: the unit of deployment. Always deployed as a whole.
-# Version comes from the VERSION file (set by build.sh as APP_VERSION).
-name: showkitchen
+# Versions come from versions.env (the pipeline passes it with --env-file).
+name: sk-demo
 
 # Least privilege for every container.
 x-hardening: &hardening
@@ -18,7 +18,7 @@ services:
     <<: *hardening
     build:
       context: ./bestellen/frontend
-    image: showkitchen/bestellen-frontend:${APP_VERSION:?run via build.sh}
+    image: showkitchen/bestellen-frontend:${BESTELLEN_FRONTEND_VERSION:?run via fcd (versions.env)}
     ports:
       - "127.0.0.1:8080:8080"
     depends_on:
@@ -30,8 +30,8 @@ services:
       context: ./bestellen
       dockerfile: backend/Dockerfile
       args:
-        APP_VERSION: ${APP_VERSION:?run via build.sh}
-    image: showkitchen/bestellen-backend:${APP_VERSION:?run via build.sh}
+        APP_VERSION: ${BESTELLEN_BACKEND_VERSION:?run via fcd (versions.env)}
+    image: showkitchen/bestellen-backend:${BESTELLEN_BACKEND_VERSION:?run via fcd (versions.env)}
     # No host port: only reachable inside the Docker network.
     environment:
       MENU_PATH: /app/menu/menu.yaml

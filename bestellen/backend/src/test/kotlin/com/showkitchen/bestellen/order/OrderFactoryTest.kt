@@ -12,23 +12,24 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class OrderFactoryTest {
-
     private val now = Instant.parse("2026-11-15T19:42:00Z")
     private val orderId = UUID.fromString("3f2b8c1e-6a4d-4e7b-9c0a-1d2e3f4a5b6c")
-    private val factory = OrderFactory(
-        menu = MenuLoader.load(Path.of("../menu/menu.yaml")),
-        clock = Clock.fixed(now, ZoneOffset.UTC),
-        newOrderId = { orderId },
-    )
+    private val factory =
+        OrderFactory(
+            menu = MenuLoader.load(Path.of("../menu/menu.yaml")),
+            clock = Clock.fixed(now, ZoneOffset.UTC),
+            newOrderId = { orderId },
+        )
 
     @Test
     fun `builds the whole order with names, stations and prices from the menu`() {
-        val order = factory.create(
-            PlaceOrderRequest(
-                tableNumber = 12,
-                lines = listOf(PlaceOrderLine("tomato-soup", 2), PlaceOrderLine("draught-beer", 2)),
+        val order =
+            factory.create(
+                PlaceOrderRequest(
+                    tableNumber = 12,
+                    lines = listOf(PlaceOrderLine("tomato-soup", 2), PlaceOrderLine("draught-beer", 2)),
+                ),
             )
-        )
 
         assertEquals(
             Order(
@@ -36,10 +37,11 @@ class OrderFactoryTest {
                 placedAt = now,
                 tableNumber = 12,
                 currency = "EUR",
-                lines = listOf(
-                    OrderLine("tomato-soup", "Tomatensoep", Station.KITCHEN, 2, 650, 1300),
-                    OrderLine("draught-beer", "Bier van de tap", Station.BAR, 2, 380, 760),
-                ),
+                lines =
+                    listOf(
+                        OrderLine("tomato-soup", "Tomatensoep", Station.KITCHEN, 2, 650, 1300),
+                        OrderLine("draught-beer", "Bier van de tap", Station.BAR, 2, 380, 760),
+                    ),
                 totalCents = 2060,
             ),
             order,

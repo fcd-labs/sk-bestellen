@@ -40,28 +40,35 @@ private const val MAX_BODY_BYTES = 16 * 1024
 
 fun main() {
     val menu = MenuLoader.load(Path.of(env("MENU_PATH", "/app/menu/menu.yaml")))
-    val client = HttpClient(CIO) {
-        install(HttpTimeout) {
-            connectTimeoutMillis = 2_000
-            requestTimeoutMillis = 5_000
+    val client =
+        HttpClient(CIO) {
+            install(HttpTimeout) {
+                connectTimeoutMillis = 2_000
+                requestTimeoutMillis = 5_000
+            }
         }
-    }
-    val receivers = listOf(
-        HttpOrderReceiver(Receiver.KITCHEN, env("KITCHEN_URL"), client),
-        HttpOrderReceiver(Receiver.BAR, env("BAR_URL"), client),
-        HttpOrderReceiver(Receiver.CASH_REGISTER, env("CASH_REGISTER_URL"), client),
-    )
+    val receivers =
+        listOf(
+            HttpOrderReceiver(Receiver.KITCHEN, env("KITCHEN_URL"), client),
+            HttpOrderReceiver(Receiver.BAR, env("BAR_URL"), client),
+            HttpOrderReceiver(Receiver.CASH_REGISTER, env("CASH_REGISTER_URL"), client),
+        )
     val service = OrderService(OrderFactory(menu, Clock.systemUTC()), receivers)
     val port = env("PORT", "8080").toInt()
 
     embeddedServer(Netty, port = port) { bestellen(menu, service) }.start(wait = true)
 }
 
-private fun env(name: String, default: String? = null): String =
-    System.getenv(name) ?: default ?: error("Environment variable $name is not set")
+private fun env(
+    name: String,
+    default: String? = null,
+): String = System.getenv(name) ?: default ?: error("Environment variable $name is not set")
 
 /** The Bestellen API, see bestellen/contracts/bestellen-api.openapi.yaml. */
-fun Application.bestellen(menu: Menu, orderService: OrderService) {
+fun Application.bestellen(
+    menu: Menu,
+    orderService: OrderService,
+) {
     install(ContentNegotiation) {
         register(ContentType.Application.Json, JacksonConverter(Json.mapper))
     }
@@ -73,7 +80,8 @@ fun Application.bestellen(menu: Menu, orderService: OrderService) {
             call.respondProblem(HttpStatusCode.BadRequest, "Invalid order", "The request does not conform to the contract.")
         }
         exception<Throwable> { call, e ->
-            call.application.environment.log.error("Unexpected error", e)
+            call.application.environment.log
+                .error("Unexpected error", e)
             call.respondProblem(HttpStatusCode.InternalServerError, "Internal error", null)
         }
     }
@@ -83,7 +91,9 @@ fun Application.bestellen(menu: Menu, orderService: OrderService) {
             call.respond(menu)
         }
         post("/orders") {
-            val request = Json.mapper.readValue(call.receiveLimitedJson(), PlaceOrderRequest::class.java)
+            val request: PlaceOrderRequest =
+                Json.mapper.readValue(call.receiveLimitedJson(), PlaceOrderRequest::class.java)
+                    ?: throw InvalidOrderException("The request does not conform to the contract.")
             call.respond(HttpStatusCode.Created, orderService.place(request))
         }
     }
@@ -103,12 +113,17 @@ private suspend fun ApplicationCall.receiveLimitedJson(): String {
 }
 
 /** Error details according to RFC 9457, without internal details. */
-private suspend fun ApplicationCall.respondProblem(status: HttpStatusCode, title: String, detail: String?) {
-    val problem = buildMap {
-        put("type", "about:blank")
-        put("title", title)
-        put("status", status.value)
-        if (detail != null) put("detail", detail)
-    }
+private suspend fun ApplicationCall.respondProblem(
+    status: HttpStatusCode,
+    title: String,
+    detail: String?,
+) {
+    val problem =
+        buildMap {
+            put("type", "about:blank")
+            put("title", title)
+            put("status", status.value)
+            if (detail != null) put("detail", detail)
+        }
     respondText(Json.mapper.writeValueAsString(problem), ContentType.parse("application/problem+json"), status)
 }

@@ -23,7 +23,10 @@
       <h3>Doorgegeven aan</h3>
       <ul class="deliveries">
         @for (delivery of result.deliveries; track delivery.receiver) {
-          <li [attr.data-testid]="'delivery-' + delivery.receiver" [class.failed]="delivery.status === 'failed'">
+          <li
+            [attr.data-testid]="'delivery-' + delivery.receiver"
+            [class.failed]="delivery.status === 'failed'"
+          >
             <span>{{ receiverName(delivery.receiver) }}</span>
             @if (delivery.status === 'delivered') {
               <span class="status ok">✓ verstuurd</span>
@@ -34,10 +37,14 @@
         }
       </ul>
 
-      <button type="button" class="primary" data-testid="new-order" (click)="newOrder()">Nieuwe bestelling</button>
+      <button type="button" class="primary" data-testid="new-order" (click)="newOrder()">
+        Nieuwe bestelling
+      </button>
     </section>
   } @else if (menuError()) {
-    <p class="card error" data-testid="menu-error" role="alert">Het menu kan nu niet geladen worden. Probeer het later opnieuw.</p>
+    <p class="card error" data-testid="menu-error" role="alert">
+      Het menu kan nu niet geladen worden. Probeer het later opnieuw.
+    </p>
   } @else if (menu(); as m) {
     @for (category of m.categories; track category.id) {
       <section class="card">
@@ -53,11 +60,29 @@
                 <span class="item-price">{{ euro(item.priceCents) }}</span>
               </div>
               <div class="stepper">
-                <button type="button" [attr.data-testid]="'remove-' + item.id" [attr.aria-label]="item.name + ' minder'"
-                        [disabled]="quantity(item) === 0" (click)="remove(item)">−</button>
-                <span class="quantity" [attr.data-testid]="'quantity-' + item.id" aria-live="polite">{{ quantity(item) }}</span>
-                <button type="button" [attr.data-testid]="'add-' + item.id" [attr.aria-label]="item.name + ' meer'"
-                        (click)="add(item)">+</button>
+                <button
+                  type="button"
+                  [attr.data-testid]="'remove-' + item.id"
+                  [attr.aria-label]="item.name + ' minder'"
+                  [disabled]="quantity(item) === 0"
+                  (click)="remove(item)"
+                >
+                  −
+                </button>
+                <span
+                  class="quantity"
+                  [attr.data-testid]="'quantity-' + item.id"
+                  aria-live="polite"
+                  >{{ quantity(item) }}</span
+                >
+                <button
+                  type="button"
+                  [attr.data-testid]="'add-' + item.id"
+                  [attr.aria-label]="item.name + ' meer'"
+                  (click)="add(item)"
+                >
+                  +
+                </button>
               </div>
             </li>
           }
@@ -67,16 +92,32 @@
 
     <section class="card order-bar">
       <label for="table-number">Tafelnummer</label>
-      <input id="table-number" data-testid="table-number" type="number" inputmode="numeric" min="1" max="999"
-             placeholder="bijv. 12" (input)="onTableInput($event)" />
+      <input
+        id="table-number"
+        data-testid="table-number"
+        type="number"
+        inputmode="numeric"
+        min="1"
+        max="999"
+        placeholder="bijv. 12"
+        (input)="onTableInput($event)"
+      />
       <p class="total">
         <span>Totaal</span>
         <span data-testid="total">{{ euro(totalCents()) }}</span>
       </p>
       @if (placeError()) {
-        <p class="error" data-testid="error" role="alert">Bestellen is niet gelukt. Probeer het opnieuw.</p>
+        <p class="error" data-testid="error" role="alert">
+          Bestellen is niet gelukt. Probeer het opnieuw.
+        </p>
       }
-      <button type="button" class="primary" data-testid="place-order" [disabled]="!canPlace()" (click)="placeOrder()">
+      <button
+        type="button"
+        class="primary"
+        data-testid="place-order"
+        [disabled]="!canPlace()"
+        (click)="placeOrder()"
+      >
         {{ placing() ? 'Bezig…' : 'Bestelling plaatsen' }}
       </button>
     </section>

@@ -4,10 +4,19 @@ Wijzigingen van het deelproduct Bestellen, per versie. Formaat: [Keep a Changelo
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-20
+
 ### Toegevoegd
 - Bestellen: de gast kiest uit het menu, geeft het tafelnummer op en de bestelling gaat naar keuken, bar en kassa (intent sk-1dp-mvp0).
 - Stubs voor keuken, bar en kassa, volgens het contract van de bestelling.
 - Unittests, end-to-end tests (Playwright) en een security-scan (Trivy).
 
+### Gewijzigd
+- Versies per container in `versions.env` (één bron); de image-tags volgen ze.
+- De CI-stappen en quality gates lopen via `fcd` (fcd-demo-pipeline); `build.sh` en `VERSION` zijn weg.
+- Contracten: `servers`, licentie en beschrijvingen toegevoegd (lint met Redocly).
+
 ### Opgelost
 - Frontend: nginx 1.30.7 (kwetsbaarheden in nginx 1.30.6).
+- Backend en stubs: een lege bestelling (`null`) of een lege regel gaf een serverfout (500), nu 400 (gevonden door de contracttest).
+- Stubs: `placedAt` als getal werd geaccepteerd; volgens het contract is het een datum-tijd als tekst.

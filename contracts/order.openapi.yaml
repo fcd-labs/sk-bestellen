@@ -2,6 +2,9 @@ openapi: 3.1.0
 info:
   title: Order contract
   version: 0.1.0
+  license:
+    name: MIT
+    identifier: MIT
   description: |
     Contract between the Bestellen sub-product (sender) and kitchen, bar and
     cash register (receivers). In mvp0 the receivers are stubs: separate
@@ -12,8 +15,12 @@ info:
 
     Receiving is idempotent: sending the same `orderId` again has the same
     result and does not create a second order.
+servers:
+  - url: /
+    description: Each receiver (kitchen, bar, cash register) on its own host
 tags:
   - name: orders
+    description: Receive the whole order
 paths:
   /orders:
     post:

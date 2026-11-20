@@ -35,7 +35,9 @@ fun main() {
 }
 
 /** Keeps the last received orders in memory, so you can see what arrived. No storage. */
-class ReceivedOrders(private val capacity: Int = 100) {
+class ReceivedOrders(
+    private val capacity: Int = 100,
+) {
     private val orders = LinkedHashMap<UUID, Order>()
 
     /** Returns false when this order was already received (idempotent). */
@@ -52,7 +54,10 @@ class ReceivedOrders(private val capacity: Int = 100) {
     fun list(): List<Order> = orders.values.reversed()
 }
 
-fun Application.stub(received: ReceivedOrders, clock: Clock) {
+fun Application.stub(
+    received: ReceivedOrders,
+    clock: Clock,
+) {
     val log = LoggerFactory.getLogger("stub-$RECEIVER")
 
     install(StatusPages) {
@@ -71,7 +76,9 @@ fun Application.stub(received: ReceivedOrders, clock: Clock) {
     routing {
         // Order contract: receive the whole order.
         post("/orders") {
-            val order = Json.mapper.readValue(call.receiveLimitedJson(), Order::class.java)
+            val order: Order =
+                Json.mapper.readValue(call.receiveLimitedJson(), Order::class.java)
+                    ?: throw InvalidOrderException("The order does not conform to the contract.")
             order.validate()
             if (received.add(order)) {
                 log.info("Received order {} for table {} ({} lines)", order.orderId, order.tableNumber, order.lines.size)
@@ -98,12 +105,17 @@ private suspend fun ApplicationCall.receiveLimitedJson(): String {
 }
 
 /** Error details according to RFC 9457, without internal details. */
-private suspend fun ApplicationCall.respondProblem(status: HttpStatusCode, title: String, detail: String?) {
-    val problem = buildMap {
-        put("type", "about:blank")
-        put("title", title)
-        put("status", status.value)
-        if (detail != null) put("detail", detail)
-    }
+private suspend fun ApplicationCall.respondProblem(
+    status: HttpStatusCode,
+    title: String,
+    detail: String?,
+) {
+    val problem =
+        buildMap {
+            put("type", "about:blank")
+            put("title", title)
+            put("status", status.value)
+            if (detail != null) put("detail", detail)
+        }
     respondText(Json.mapper.writeValueAsString(problem), ContentType.parse("application/problem+json"), status)
 }

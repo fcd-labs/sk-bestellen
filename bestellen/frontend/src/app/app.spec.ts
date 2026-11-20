@@ -12,7 +12,13 @@ const menu: Menu = {
       id: 'starters',
       name: 'Voorgerechten',
       items: [
-        { id: 'tomato-soup', name: 'Tomatensoep', description: 'Met basilicum', priceCents: 650, station: 'kitchen' },
+        {
+          id: 'tomato-soup',
+          name: 'Tomatensoep',
+          description: 'Met basilicum',
+          priceCents: 650,
+          station: 'kitchen',
+        },
       ],
     },
     {
@@ -31,8 +37,22 @@ function placedOrder(barStatus: 'delivered' | 'failed'): PlacedOrder {
       tableNumber: 12,
       currency: 'EUR',
       lines: [
-        { menuItemId: 'tomato-soup', name: 'Tomatensoep', station: 'kitchen', quantity: 2, unitPriceCents: 650, lineTotalCents: 1300 },
-        { menuItemId: 'draught-beer', name: 'Bier van de tap', station: 'bar', quantity: 1, unitPriceCents: 380, lineTotalCents: 380 },
+        {
+          menuItemId: 'tomato-soup',
+          name: 'Tomatensoep',
+          station: 'kitchen',
+          quantity: 2,
+          unitPriceCents: 650,
+          lineTotalCents: 1300,
+        },
+        {
+          menuItemId: 'draught-beer',
+          name: 'Bier van de tap',
+          station: 'bar',
+          quantity: 1,
+          unitPriceCents: 380,
+          lineTotalCents: 380,
+        },
       ],
       totalCents: 1680,
     },
@@ -142,7 +162,9 @@ describe('App (bestellen)', () => {
     await click('add-tomato-soup');
     await enterTable('12');
     await click('place-order');
-    http.expectOne('/api/orders').flush(placedOrder('failed'), { status: 201, statusText: 'Created' });
+    http
+      .expectOne('/api/orders')
+      .flush(placedOrder('failed'), { status: 201, statusText: 'Created' });
     await render();
 
     expect(byTestId('delivery-bar')!.textContent).toContain('niet gelukt');
@@ -153,7 +175,9 @@ describe('App (bestellen)', () => {
     await click('add-tomato-soup');
     await enterTable('12');
     await click('place-order');
-    http.expectOne('/api/orders').flush({ status: 400 }, { status: 400, statusText: 'Bad Request' });
+    http
+      .expectOne('/api/orders')
+      .flush({ status: 400 }, { status: 400, statusText: 'Bad Request' });
     await render();
 
     expect(byTestId('error')!.textContent).toContain('niet gelukt');
@@ -164,7 +188,9 @@ describe('App (bestellen)', () => {
     await click('add-tomato-soup');
     await enterTable('12');
     await click('place-order');
-    http.expectOne('/api/orders').flush(placedOrder('delivered'), { status: 201, statusText: 'Created' });
+    http
+      .expectOne('/api/orders')
+      .flush(placedOrder('delivered'), { status: 201, statusText: 'Created' });
     await render();
 
     await click('new-order');

@@ -8,3 +8,4 @@ Wat voor alle repositories geldt staat in `../CLAUDE.md`. De way of working (kad
 - Contract first: `contracts/order.openapi.yaml` (de bestelling naar de stubs) en `bestellen/contracts/` (frontend–backend). Datamodel first: `bestellen/menu/menu.schema.json`.
 - Een menu wijzigen gaat via de pipeline (`bestellen/menu/menu.yaml`).
 - Elke wijziging: een regel in `CHANGELOG.md`. Een security-actie: ook een regel in `SECURITY.md`, in hetzelfde pull request.
+- Bouwen, testen en controleren: `../fcd-demo-pipeline/fcd ci .` (configuratie in `ci/steps.sh`). Versies in `versions.env`, met de hand of `fcd bump`.

@@ -4,14 +4,22 @@ WORKDIR /src
 COPY pom.xml .
 RUN mvn -B -q -Daether.connector.http.retryHandler.count=5 dependency:go-offline
 COPY src ./src
-# 'package' runs the unit tests; the image is only made when they pass.
-RUN mvn -B -Daether.connector.http.retryHandler.count=5 package -Drevision=${APP_VERSION}
+# Unit tests (CI step 2) run in 'package'. Reports are kept; the result is checked in the
+# 'checked' stage, so the image is only made when all tests pass.
+RUN mvn -B -Daether.connector.http.retryHandler.count=5 package -Drevision=${APP_VERSION} -Dmaven.test.failure.ignore=true
+
+# Test reports only: exported by the pipeline (docker build --target test-reports --output ...).
+FROM scratch AS test-reports
+COPY --from=build /src/target/surefire-reports/ /
+
+FROM build AS checked
+RUN ls target/surefire-reports/TEST-*.xml >/dev/null && ! grep -qE '<(failure|error)[ >]' target/surefire-reports/TEST-*.xml
 
 FROM eclipse-temurin:21-jre-alpine@sha256:ac05c3c42b7c2f1a52c9bd52f01041fa1958231b15ebeae7420429cbc5baf474
 # Apply Alpine security fixes released after the base image was built.
 RUN apk upgrade --no-cache
 WORKDIR /app
-COPY --from=build /src/target/app.jar /app/app.jar
+COPY --from=checked /src/target/app.jar /app/app.jar
 # Run as an unprivileged user, not root.
 USER 10001:10001
 EXPOSE 8080

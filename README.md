@@ -17,11 +17,16 @@ Meer over deze showcase: https://fcd-labs.github.io/fcd/showcases/demo/
 ## Zelf draaien
 
 Nodig: git, bash en een container-runtime met `docker` en `docker compose`. Alles draait lokaal.
+Clone deze repository naast [fcd-demo-pipeline](https://github.com/fcd-labs/fcd-demo-pipeline) en de andere repositories van [fcd-demo](https://github.com/fcd-labs/fcd-demo).
 
 ```bash
-./build.sh all
+../fcd-demo-pipeline/fcd check
+../fcd-demo-pipeline/fcd ci .
 ```
 
-Daarna: http://127.0.0.1:8080. Dit wordt het startcommando van fcd-demo (volgt).
+`fcd ci` doorloopt de CI-stappen en quality gates (zie [fcd-mvp0.md](https://github.com/fcd-labs/fcd-demo/blob/main/fcd-mvp0.md)). Met `../fcd-demo-pipeline/fcd hooks .` draait hij vóór elke push.
+Uitrollen doet alleen de Pipeline, na een merge op `main`. Daarna: http://127.0.0.1:8080.
+
+Versies: [versions.env](versions.env). Afwijkingen op een gate: [explains.yaml](explains.yaml).
 
 Wijzigingen: [CHANGELOG.md](CHANGELOG.md). Security: [SECURITY.md](SECURITY.md). Licentie: [MIT](LICENSE).

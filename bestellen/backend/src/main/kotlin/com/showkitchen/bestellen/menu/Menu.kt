@@ -36,15 +36,18 @@ data class MenuItem(
     val station: Station,
 )
 
-enum class Station(@get:JsonValue val value: String) {
+enum class Station(
+    @get:JsonValue val value: String,
+) {
     KITCHEN("kitchen"),
     BAR("bar"),
 }
 
 object MenuLoader {
-    private val yaml = ObjectMapper(YAMLFactory())
-        .registerModule(kotlinModule())
-        .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private val yaml =
+        ObjectMapper(YAMLFactory())
+            .registerModule(kotlinModule())
+            .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
     fun load(path: Path): Menu = Files.newBufferedReader(path).use { yaml.readValue(it) }
 }

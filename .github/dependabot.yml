@@ -1,0 +1,13 @@
+# Library updates come automatically as a pull request and go through the same pipeline
+# (tested locally with `fcd ci` before the merge; the Pipeline runs only what is merged on main).
+version: 2
+updates:
+  - package-ecosystem: maven
+    directories: ["/bestellen/backend", "/stubs/kitchen", "/stubs/bar", "/stubs/cash-register"]
+    schedule: { interval: weekly }
+  - package-ecosystem: npm
+    directories: ["/bestellen/frontend", "/e2e"]
+    schedule: { interval: weekly }
+  - package-ecosystem: docker
+    directories: ["/bestellen/frontend", "/bestellen/backend", "/stubs/kitchen", "/stubs/bar", "/stubs/cash-register", "/e2e"]
+    schedule: { interval: weekly }

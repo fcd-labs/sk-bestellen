@@ -1,0 +1,11 @@
+# Override for short-lived environments of the pipeline (integration tests, local runs before a push):
+# no host ports, so it runs next to the deployed environment.
+services:
+  bestellen-frontend:
+    ports: !reset []
+  stub-kitchen:
+    ports: !reset []
+  stub-bar:
+    ports: !reset []
+  stub-cash-register:
+    ports: !reset []

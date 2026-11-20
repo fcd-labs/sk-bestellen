@@ -2,6 +2,9 @@ openapi: 3.1.0
 info:
   title: Bestellen API
   version: 0.1.0
+  license:
+    name: MIT
+    identifier: MIT
   description: |
     Contract between the frontend and the backend of the Bestellen
     sub-product. Internal to the sub-product.
@@ -9,9 +12,14 @@ info:
     The guest picks menu items by id and quantity. The backend takes names
     and prices from the menu file, builds the whole order (order contract)
     and sends it to kitchen, bar and cash register.
+servers:
+  - url: /
+    description: The backend, reached through the frontend under /api
 tags:
   - name: menu
+    description: The menu of the restaurant
   - name: orders
+    description: Place an order
 paths:
   /menu:
     get:
