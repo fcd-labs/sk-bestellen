@@ -23,13 +23,15 @@ const val KEY_RESULT = "Elke bestelling van de gast komt aan bij keuken, bar en 
 
 /** Measures the key result of the intent Bestellen for one placed order. */
 fun interface KeyResultMeter {
+    /** test: the order comes from an end-to-end test; it is sent, but does not count for the key result. */
     fun measured(
         placed: PlacedOrder,
         durationSeconds: Double,
+        test: Boolean,
     )
 
     companion object {
-        val NONE = KeyResultMeter { _, _ -> }
+        val NONE = KeyResultMeter { _, _, _ -> }
     }
 }
 
@@ -47,6 +49,7 @@ object KeyResultEvent {
         placed: PlacedOrder,
         context: KeyResultContext,
         durationSeconds: Double,
+        test: Boolean = false,
         id: String = UUID.randomUUID().toString(),
         now: Instant = Instant.now(),
     ): ObjectNode {
@@ -80,8 +83,8 @@ object KeyResultEvent {
             put("durationSeconds", durationSeconds)
             put("run", "")
             putObject("trigger").apply {
-                put("kind", "guest")
-                put("name", "gast")
+                put("kind", if (test) "test" else "guest")
+                put("name", if (test) "end-to-end test" else "gast")
             }
             put("product", "showkitchen")
             putObject("subProduct").apply {
@@ -110,8 +113,9 @@ class HttpKeyResultMeter(
     override fun measured(
         placed: PlacedOrder,
         durationSeconds: Double,
+        test: Boolean,
     ) {
-        val body = Json.mapper.writeValueAsString(KeyResultEvent.of(placed, context, durationSeconds))
+        val body = Json.mapper.writeValueAsString(KeyResultEvent.of(placed, context, durationSeconds, test))
         scope.launch {
             try {
                 val response = client.post(url) { setBody(TextContent(body, ContentType.Application.Json)) }

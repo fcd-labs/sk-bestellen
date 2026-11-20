@@ -77,7 +77,7 @@ class OrderServiceTest {
                 OrderService(
                     factory,
                     listOf(FakeReceiver(Receiver.KITCHEN), FakeReceiver(Receiver.BAR, fail = true), FakeReceiver(Receiver.CASH_REGISTER)),
-                    meter = { placed, _ -> measured += placed },
+                    meter = { placed, _, test -> if (!test) measured += placed },
                 )
 
             service.place(request)

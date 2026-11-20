@@ -114,7 +114,14 @@ fun Application.bestellen(
             val request: PlaceOrderRequest =
                 Json.mapper.readValue(call.receiveLimitedJson(), PlaceOrderRequest::class.java)
                     ?: throw InvalidOrderException("The request does not conform to the contract.")
-            call.respond(HttpStatusCode.Created, orderService.place(request))
+            // An end-to-end test marks its orders, so they do not count for the key result.
+            val test =
+                when (call.request.headers["X-FCD-Test"]) {
+                    null, "false" -> false
+                    "true" -> true
+                    else -> throw InvalidOrderException("X-FCD-Test must be true or false.")
+                }
+            call.respond(HttpStatusCode.Created, orderService.place(request, test))
         }
     }
 }

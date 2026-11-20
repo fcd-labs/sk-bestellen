@@ -4,6 +4,15 @@ Wijzigingen van het deelproduct Bestellen, per versie. Formaat: [Keep a Changelo
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-20
+
+### Gewijzigd
+- Bestellingen van end-to-end tests (header `X-FCD-Test: true`) worden gemeten als test en tellen niet mee voor het key result (contract van de logregel 0.2.0).
+- Versheidscontrole: een reden per onderdeel (backend/maven, frontend/npm), zodat een afwijking alleen voor haar eigen onderdeel geldt.
+
+### Opgelost
+- De versheidscontrole voor Maven zag niets (door `-q`). Nu gevonden: json-schema-validator een major-versie achter; afwijking EXP-002 tot 2026-12-31 (goedgekeurd door Johannes).
+
 ## [0.2.0] - 2026-11-20
 
 ### Toegevoegd
