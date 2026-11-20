@@ -28,7 +28,10 @@ class OrderService(
     private val receivers: List<OrderReceiver>,
     private val meter: KeyResultMeter = KeyResultMeter.NONE,
 ) {
-    suspend fun place(request: PlaceOrderRequest): PlacedOrder {
+    suspend fun place(
+        request: PlaceOrderRequest,
+        test: Boolean = false,
+    ): PlacedOrder {
         val order = factory.create(request)
         val started = System.nanoTime()
         val deliveries =
@@ -37,7 +40,7 @@ class OrderService(
             }
         val placed = PlacedOrder(order, deliveries)
         // Key result: did the order arrive at kitchen, bar and cash register?
-        meter.measured(placed, (System.nanoTime() - started) / 1_000_000_000.0)
+        meter.measured(placed, (System.nanoTime() - started) / 1_000_000_000.0, test)
         return placed
     }
 }

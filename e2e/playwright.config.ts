@@ -10,6 +10,8 @@ export default defineConfig({
   reporter: [['list']],
   use: {
     baseURL: process.env.BASE_URL ?? 'http://bestellen-frontend:8080',
+    // Orders of the end-to-end tests do not count for the key result.
+    extraHTTPHeaders: { 'X-FCD-Test': 'true' },
     trace: 'off',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],

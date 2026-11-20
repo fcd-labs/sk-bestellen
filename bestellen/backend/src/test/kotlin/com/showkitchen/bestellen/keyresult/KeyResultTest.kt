@@ -67,7 +67,7 @@ class KeyResultTest {
 
     @Test
     fun `the log line carries the fields of the contract`() {
-        val custom = KeyResultEvent.of(placed(), context, durationSeconds = 0.2, id = "e3", now = now)["customData"]
+        val custom = KeyResultEvent.of(placed(), context, durationSeconds = 0.2, test = false, id = "e3", now = now)["customData"]
 
         assertEquals("showkitchen", custom["product"].asText())
         assertEquals("bestellen", custom["subProduct"]["name"].asText())
@@ -79,5 +79,13 @@ class KeyResultTest {
         assertEquals("lokaal", custom["environment"].asText())
         assertEquals("", custom["run"].asText())
         assertFalse(Json.mapper.writeValueAsString(custom).contains("password"))
+    }
+
+    @Test
+    fun `an order of an end-to-end test is marked as test, so it does not count for the key result`() {
+        val custom = KeyResultEvent.of(placed(), context, durationSeconds = 0.2, test = true, id = "e4", now = now)["customData"]
+
+        assertEquals("test", custom["trigger"]["kind"].asText())
+        assertEquals("end-to-end test", custom["trigger"]["name"].asText())
     }
 }

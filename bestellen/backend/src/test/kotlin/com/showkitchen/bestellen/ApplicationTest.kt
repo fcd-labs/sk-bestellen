@@ -1,12 +1,14 @@
 package com.showkitchen.bestellen
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.showkitchen.bestellen.keyresult.KeyResultMeter
 import com.showkitchen.bestellen.menu.MenuLoader
 import com.showkitchen.bestellen.order.HttpOrderReceiver
 import com.showkitchen.bestellen.order.OrderFactory
 import com.showkitchen.bestellen.order.OrderService
 import com.showkitchen.bestellen.order.Receiver
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -46,7 +48,10 @@ class ApplicationTest {
         )
 
     /** Starts the app with fake kitchen, bar and cash register; returns what each received. */
-    private fun ApplicationTestBuilder.setUp(failing: Receiver? = null): Map<Receiver, MutableList<JsonNode>> {
+    private fun ApplicationTestBuilder.setUp(
+        failing: Receiver? = null,
+        meter: KeyResultMeter = KeyResultMeter.NONE,
+    ): Map<Receiver, MutableList<JsonNode>> {
         val received = Receiver.entries.associateWith { Collections.synchronizedList(mutableListOf<JsonNode>()) }
         externalServices {
             hosts.forEach { (receiver, host) ->
@@ -72,7 +77,7 @@ class ApplicationTest {
         val httpClient = createClient { }
         application {
             val receivers = hosts.map { (receiver, host) -> HttpOrderReceiver(receiver, host, httpClient) }
-            bestellen(menu, OrderService(OrderFactory(menu, Clock.systemUTC()), receivers))
+            bestellen(menu, OrderService(OrderFactory(menu, Clock.systemUTC()), receivers, meter))
         }
         return received
     }
@@ -190,5 +195,28 @@ class ApplicationTest {
 
             assertEquals(HttpStatusCode.BadRequest, response.status)
             assertTrue(response.bodyAsText().contains("\"status\":400"))
+        }
+
+    @Test
+    fun `an order with the header X-FCD-Test is measured as a test order`() =
+        testApplication {
+            val tests = mutableListOf<Boolean>()
+            setUp(meter = { _, _, test -> tests += test })
+
+            placeOrder("""{"tableNumber": 12, "lines": [{"menuItemId": "tomato-soup", "quantity": 1}]}""")
+            client.post("/orders") {
+                contentType(ContentType.Application.Json)
+                header("X-FCD-Test", "true")
+                setBody("""{"tableNumber": 12, "lines": [{"menuItemId": "tomato-soup", "quantity": 1}]}""")
+            }
+
+            val invalid =
+                client.post("/orders") {
+                    contentType(ContentType.Application.Json)
+                    header("X-FCD-Test", "AAA")
+                    setBody("""{"tableNumber": 12, "lines": [{"menuItemId": "tomato-soup", "quantity": 1}]}""")
+                }
+            assertEquals(HttpStatusCode.BadRequest, invalid.status)
+            assertEquals(listOf(false, true), tests)
         }
 }

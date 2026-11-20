@@ -45,26 +45,31 @@ ci_unit() { # the unit tests run in the image builds; the reports are exported
   v=$(ver_get "$R_REPO" STUB_CASH_REGISTER_VERSION); unit_from_dockerfile stub-cash-register stubs/cash-register "" --build-arg "APP_VERSION=$v"
 }
 
-ci_freshness() { # 0 = fresh enough, 1 = a library is a major version behind, 2 = could not be determined
-  local p out major=0 minor=0 failed=0
+ci_freshness() { # versheid: how far libraries are behind. A library a major version behind closes the
+  # security gate, with a reason per part (backend/maven, frontend/npm), so an explain covers only its part.
+  # Returns 2 when it could not be determined.
+  local p out lines major_be="" major_fe="" minor=0 failed=0
   for p in $MAVEN_PROJECTS; do
     echo "== maven $p"
-    out=$(mvn_r "$p" org.codehaus.mojo:versions-maven-plugin:2.25.2:display-dependency-updates -DprocessDependencyManagement=false -q -DoutputFile=/dev/stdout -DoutputEncoding=UTF-8 2>&1) || { failed=1; echo "$out" | tail -3; continue; }
-    printf '%s\n' "$out" | grep -- '->' || echo "up to date"
-    major=$((major + $(printf '%s\n' "$out" | awk '/->/ { split($(NF-2), a, "."); split($NF, b, "."); if (b[1] + 0 > a[1] + 0) n++ } END { print n + 0 }')))
-    minor=$((minor + $(printf '%s\n' "$out" | grep -c -- '->' || true)))
+    out=$(docker run --rm -v "$R_REPO":/w -v fcd-m2:/root/.m2 -w "/w/$p" "$TOOL_MAVEN" mvn -B \
+      org.codehaus.mojo:versions-maven-plugin:2.25.2:display-dependency-updates -DprocessDependencyManagement=false 2>&1) || { failed=1; continue; }
+    # Lines like: [INFO]   group:artifact ......... 1.5.9 -> 3.0.9
+    lines=$(printf '%s\n' "$out" | grep -- ' -> ' | sed 's/^\[INFO\] *//' || true)
+    [ -n "$lines" ] && printf '%s\n' "$lines" || echo "up to date"
+    major_be="$major_be$(printf '%s\n' "$lines" | awk 'NF { split($(NF-2), a, "."); split($NF, b, "."); if (b[1] + 0 > a[1] + 0) printf " %s %s->%s", $1, $(NF-2), $NF }')"
+    minor=$((minor + $(printf '%s\n' "$lines" | grep -c . || true)))
   done
-  echo "== npm bestellen/frontend"
-  docker build -q --target build -t "fcd-tmp/sk-demo-frontend-build" "$R_REPO/bestellen/frontend" >/dev/null || failed=1
+  echo "== npm frontend"
+  docker build -q --target build -t fcd-tmp/sk-demo-frontend-build "$R_REPO/bestellen/frontend" >/dev/null || failed=1
   out=$(docker run --rm fcd-tmp/sk-demo-frontend-build npm outdated --parseable 2>/dev/null || true)
   # --parseable: dir:name@wanted:name@current:name@latest:dependent (names can be scoped: @scope/name)
   local npm_awk='function ver(f) { return substr(f, match(f, /@[^@]*$/) + 1) } function name(f) { return substr(f, 1, match(f, /@[^@]*$/) - 1) }'
   printf '%s\n' "$out" | awk -F: "$npm_awk"' NF { print name($3) " " ver($3) " -> " ver($4) }'
-  major=$((major + $(printf '%s\n' "$out" | awk -F: "$npm_awk"' NF { split(ver($3), a, "."); split(ver($4), b, "."); if (b[1] + 0 > a[1] + 0) n++ } END { print n + 0 }')))
+  major_fe=$(printf '%s\n' "$out" | awk -F: "$npm_awk"' NF { split(ver($3), a, "."); split(ver($4), b, "."); if (b[1] + 0 > a[1] + 0) printf " %s", name($3) }')
   minor=$((minor + $(printf '%s\n' "$out" | grep -c . || true)))
-  echo "behind: $major major, $minor in total"
-  [ "$major" -gt 0 ] && return 1
+  [ -n "$major_be" ] && s_fail "versheid backend (maven): een major-versie achter:$major_be"
+  [ -n "$major_fe" ] && s_fail "versheid frontend (npm): een major-versie achter:$major_fe"
   [ "$failed" -eq 1 ] && return 2
-  [ "$minor" -gt 0 ] && s_warn "versheid: $minor libraries hebben een nieuwere minor- of patchversie"
+  [ "$minor" -gt 0 ] && s_warn "versheid: $minor libraries hebben een nieuwere versie"
   return 0
 }

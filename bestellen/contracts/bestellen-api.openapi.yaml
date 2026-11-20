@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Bestellen API
-  version: 0.1.0
+  version: 0.2.0
   license:
     name: MIT
     identifier: MIT
@@ -38,6 +38,12 @@ paths:
       tags: [orders]
       operationId: placeOrder
       summary: Place an order
+      parameters:
+        - name: X-FCD-Test
+          in: header
+          required: false
+          description: true for an order of an end-to-end test; it does not count for the key result.
+          schema: { type: string, enum: ['true', 'false'] }
       requestBody:
         required: true
         content:
