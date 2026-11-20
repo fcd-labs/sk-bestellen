@@ -1,6 +1,9 @@
 package com.showkitchen.bestellen
 
 import com.fasterxml.jackson.core.JacksonException
+import com.showkitchen.bestellen.keyresult.HttpKeyResultMeter
+import com.showkitchen.bestellen.keyresult.KeyResultContext
+import com.showkitchen.bestellen.keyresult.KeyResultMeter
 import com.showkitchen.bestellen.menu.Menu
 import com.showkitchen.bestellen.menu.MenuLoader
 import com.showkitchen.bestellen.order.HttpOrderReceiver
@@ -53,7 +56,24 @@ fun main() {
             HttpOrderReceiver(Receiver.BAR, env("BAR_URL"), client),
             HttpOrderReceiver(Receiver.CASH_REGISTER, env("CASH_REGISTER_URL"), client),
         )
-    val service = OrderService(OrderFactory(menu, Clock.systemUTC()), receivers)
+    val meter =
+        System.getenv("DASHBOARD_EVENTS_URL")?.takeIf { it.isNotBlank() }?.let { url ->
+            HttpKeyResultMeter(
+                url,
+                KeyResultContext(
+                    experiment = env("FCD_EXPERIMENT", "mvp0"),
+                    environment = env("FCD_ENVIRONMENT", "lokaal"),
+                    subProductVersion = env("SUBPRODUCT_VERSION", "0.0.0"),
+                    containers =
+                        mapOf(
+                            "bestellen-frontend" to env("BESTELLEN_FRONTEND_VERSION", "0.0.0"),
+                            "bestellen-backend" to env("BESTELLEN_BACKEND_VERSION", "0.0.0"),
+                        ),
+                ),
+                client,
+            )
+        } ?: KeyResultMeter.NONE
+    val service = OrderService(OrderFactory(menu, Clock.systemUTC()), receivers, meter)
     val port = env("PORT", "8080").toInt()
 
     embeddedServer(Netty, port = port) { bestellen(menu, service) }.start(wait = true)

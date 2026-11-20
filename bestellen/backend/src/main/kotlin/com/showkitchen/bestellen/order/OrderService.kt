@@ -1,6 +1,7 @@
 package com.showkitchen.bestellen.order
 
 import com.showkitchen.bestellen.Json
+import com.showkitchen.bestellen.keyresult.KeyResultMeter
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -25,14 +26,19 @@ interface OrderReceiver {
 class OrderService(
     private val factory: OrderFactory,
     private val receivers: List<OrderReceiver>,
+    private val meter: KeyResultMeter = KeyResultMeter.NONE,
 ) {
     suspend fun place(request: PlaceOrderRequest): PlacedOrder {
         val order = factory.create(request)
+        val started = System.nanoTime()
         val deliveries =
             coroutineScope {
                 receivers.map { async { it.send(order) } }.awaitAll()
             }
-        return PlacedOrder(order, deliveries)
+        val placed = PlacedOrder(order, deliveries)
+        // Key result: did the order arrive at kitchen, bar and cash register?
+        meter.measured(placed, (System.nanoTime() - started) / 1_000_000_000.0)
+        return placed
     }
 }
 
