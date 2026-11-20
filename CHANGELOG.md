@@ -4,6 +4,11 @@ Wijzigingen van het deelproduct Bestellen, per versie. Formaat: [Keep a Changelo
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-20
+
+### Toegevoegd
+- Key result van de intent Bestellen gemeten: per bestelling of hij is aangekomen bij keuken, bar en kassa. De meting gaat als logregel naar het Dashboard (fcd-demo), asynchroon: de bestelling wacht er niet op en mislukt er niet door.
+
 ## [0.1.0] - 2026-11-20
 
 ### Toegevoegd

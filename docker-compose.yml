@@ -38,3 +38,13 @@ services:
       KITCHEN_URL: http://stub-kitchen:8080
       BAR_URL: http://stub-bar:8080
       CASH_REGISTER_URL: http://stub-cash-register:8080
+      # Key result: every order is measured and sent to the Dashboard (fcd-demo) on this machine.
+      DASHBOARD_EVENTS_URL: ${DASHBOARD_EVENTS_URL:-http://host.docker.internal:8070/api/v1/events}
+      FCD_EXPERIMENT: ${FCD_EXPERIMENT:-mvp0}
+      FCD_ENVIRONMENT: ${FCD_ENVIRONMENT:-lokaal}
+      SUBPRODUCT_VERSION: ${SUBPRODUCT_VERSION:?run via fcd (versions.env)}
+      BESTELLEN_FRONTEND_VERSION: ${BESTELLEN_FRONTEND_VERSION:?run via fcd (versions.env)}
+      BESTELLEN_BACKEND_VERSION: ${BESTELLEN_BACKEND_VERSION:?run via fcd (versions.env)}
+    extra_hosts:
+      # Works with Docker Desktop, Rancher Desktop (dockerd), Colima and Linux.
+      - "host.docker.internal:host-gateway"

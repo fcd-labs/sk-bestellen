@@ -68,4 +68,21 @@ class OrderServiceTest {
                 placed.deliveries.map { it.status },
             )
         }
+
+    @Test
+    fun `reports every placed order to the key-result meter, also when a receiver fails`() =
+        runBlocking {
+            val measured = mutableListOf<PlacedOrder>()
+            val service =
+                OrderService(
+                    factory,
+                    listOf(FakeReceiver(Receiver.KITCHEN), FakeReceiver(Receiver.BAR, fail = true), FakeReceiver(Receiver.CASH_REGISTER)),
+                    meter = { placed, _ -> measured += placed },
+                )
+
+            service.place(request)
+
+            assertEquals(1, measured.size)
+            assertEquals(DeliveryStatus.FAILED, measured[0].deliveries.first { it.receiver == Receiver.BAR }.status)
+        }
 }
