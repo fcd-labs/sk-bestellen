@@ -13,6 +13,8 @@ stub-bar=contracts/order.openapi.yaml@http://stub-bar:8080
 stub-cash-register=contracts/order.openapi.yaml@http://stub-cash-register:8080"
 # Which contract checks run (and how many examples) is in the configuration of the showcase (Step integration-tests).
 CI_READY_URL="http://bestellen-frontend:8080/api/menu"
+# Test traffic is marked as test, so it never counts as an order of a guest in the key result.
+CI_TEST_HEADERS="X-FCD-Test: true"
 CI_E2E_DIR="e2e"
 
 MAVEN_PROJECTS="bestellen/backend stubs/kitchen stubs/bar stubs/cash-register"
