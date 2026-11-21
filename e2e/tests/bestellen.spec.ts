@@ -34,12 +34,15 @@ async function placeOrder(page: Page, tableNumber: number, picks: Record<string,
 }
 
 test.describe('Intent Bestellen', () => {
-  // The core path only: the guest places an order and gets a confirmation. Where the order arrives is checked
-  // by the scenarios below. In the demo only this test runs (explain in the configuration of the showcase).
-  test('core path: the guest places an order @kernpad', async ({ page }) => {
-    await placeOrder(page, 3, { Tomatensoep: 1 });
+  // The core path: the guest places an order with food and drink, gets a confirmation, and the order is passed on
+  // to kitchen, bar and cash register. In the demo only this test runs (explain in the configuration of the showcase).
+  test('core path: the guest places an order and it is passed on to kitchen, bar and cash register @kernpad', async ({ page }) => {
+    await placeOrder(page, 3, { Tomatensoep: 1, Cola: 1 });
 
     await expect(page.getByTestId('result')).toContainText('Bestelling geplaatst voor tafel 3');
+    for (const [receiver, name] of [['kitchen', 'Keuken'], ['bar', 'Bar'], ['cash-register', 'Kassa']]) {
+      await expect(page.getByTestId(`delivery-${receiver}`), `${name} kreeg de bestelling niet`).toContainText('verstuurd');
+    }
   });
 
   test('scenario 1: the guest gets a menu to choose from, chooses, and the order goes to kitchen, bar and cash register', async ({ page }) => {
