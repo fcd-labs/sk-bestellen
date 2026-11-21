@@ -4,6 +4,13 @@ Wijzigingen van het deelproduct Bestellen, per versie. Formaat: [Keep a Changelo
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-21
+
+### Gewijzigd
+- Bestellen 1.0.0: de versie waarmee de demo van de showcase Demo begint. Alle containers en stubs op 1.0.0.
+- De adressen van keuken, bar en kassa staan als standaard in de backend; `docker-compose.yml` hoeft ze niet meer mee te geven (met `KITCHEN_URL`, `BAR_URL` en `CASH_REGISTER_URL` kun je ze nog overschrijven).
+- End-to-end: een test voor het kernpad (een bestelling plaatsen, met de bevestiging), te kiezen met `@kernpad`.
+
 ## [0.4.0] - 2026-11-20
 
 ### Gewijzigd

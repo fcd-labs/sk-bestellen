@@ -35,9 +35,6 @@ services:
     # No host port: only reachable inside the Docker network.
     environment:
       MENU_PATH: /app/menu/menu.yaml
-      KITCHEN_URL: http://stub-kitchen:8080
-      BAR_URL: http://stub-bar:8080
-      CASH_REGISTER_URL: http://stub-cash-register:8080
       # Key result: every order is measured and sent to the Dashboard (fcd-demo) on this machine.
       DASHBOARD_EVENTS_URL: ${DASHBOARD_EVENTS_URL:?run via fcd (Dashboard of the showcase)}
       FCD_SHOWCASE: ${FCD_SHOWCASE:?run via fcd (showcase)}

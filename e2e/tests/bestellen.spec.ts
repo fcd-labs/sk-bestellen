@@ -34,6 +34,14 @@ async function placeOrder(page: Page, tableNumber: number, picks: Record<string,
 }
 
 test.describe('Intent Bestellen', () => {
+  // The core path only: the guest places an order and gets a confirmation. Where the order arrives is checked
+  // by the scenarios below. In the demo only this test runs (explain in the configuration of the showcase).
+  test('core path: the guest places an order @kernpad', async ({ page }) => {
+    await placeOrder(page, 3, { Tomatensoep: 1 });
+
+    await expect(page.getByTestId('result')).toContainText('Bestelling geplaatst voor tafel 3');
+  });
+
   test('scenario 1: the guest gets a menu to choose from, chooses, and the order goes to kitchen, bar and cash register', async ({ page }) => {
     await page.goto('/');
     for (const category of ['Voorgerechten', 'Hoofdgerechten', 'Desserts', 'Dranken']) {

@@ -38,6 +38,14 @@ import kotlinx.io.readByteArray
 import java.nio.file.Path
 import java.time.Clock
 
+/** Where kitchen, bar and cash register are by default: their stubs in the network of the sub-product. */
+internal val DEFAULT_RECEIVER_URLS =
+    mapOf(
+        Receiver.KITCHEN to "http://stub-kitchen:8080",
+        Receiver.BAR to "http://stub-baar:8080",
+        Receiver.CASH_REGISTER to "http://stub-cash-register:8080",
+    )
+
 /** Largest accepted request body. An order is small; this blocks oversized requests. */
 private const val MAX_BODY_BYTES = 16 * 1024
 
@@ -52,9 +60,13 @@ fun main() {
         }
     val receivers =
         listOf(
-            HttpOrderReceiver(Receiver.KITCHEN, env("KITCHEN_URL"), client),
-            HttpOrderReceiver(Receiver.BAR, env("BAR_URL"), client),
-            HttpOrderReceiver(Receiver.CASH_REGISTER, env("CASH_REGISTER_URL"), client),
+            HttpOrderReceiver(Receiver.KITCHEN, env("KITCHEN_URL", DEFAULT_RECEIVER_URLS.getValue(Receiver.KITCHEN)), client),
+            HttpOrderReceiver(Receiver.BAR, env("BAR_URL", DEFAULT_RECEIVER_URLS.getValue(Receiver.BAR)), client),
+            HttpOrderReceiver(
+                Receiver.CASH_REGISTER,
+                env("CASH_REGISTER_URL", DEFAULT_RECEIVER_URLS.getValue(Receiver.CASH_REGISTER)),
+                client,
+            ),
         )
     val meter =
         System.getenv("DASHBOARD_EVENTS_URL")?.takeIf { it.isNotBlank() }?.let { url ->
