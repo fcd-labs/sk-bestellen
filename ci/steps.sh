@@ -22,20 +22,38 @@ mvn_r() { # project goals...
   docker run --rm -v "$R_REPO":/w -v fcd-m2:/root/.m2 -w "/w/$p" "$TOOL_MAVEN" mvn -B -q "$@"
 }
 
-ci_lint() { # ktlint (MIT) for Kotlin, Prettier (MIT) for the frontend
+# Per container (the Pipeline passes it for steps of level container); without one: everything, stubs included.
+# Stubs are not part of Bestellen: they have their own lifecycle and are not checked in the run of a container.
+maven_projects_of() { # [container]
+  case ${1:-} in
+    bestellen-backend) echo bestellen/backend ;;
+    bestellen-frontend) ;;
+    *) echo "$MAVEN_PROJECTS" ;;
+  esac
+}
+
+ci_lint() { # [container]: ktlint (MIT) for Kotlin, Prettier (MIT) for the frontend
   local p rc=0
-  for p in $MAVEN_PROJECTS; do
+  for p in $(maven_projects_of "${1:-}"); do
     echo "== ktlint $p"
     mvn_r "$p" com.github.gantsign.maven:ktlint-maven-plugin:3.7.1:check || rc=1
   done
-  echo "== prettier bestellen/frontend"
-  docker run --rm -e npm_config_cache=/tmp/npm -v "$R_REPO/bestellen/frontend":/w:ro -w /w "$TOOL_NODE" \
-    npx -y prettier@3.8.1 --check 'src/**/*.{ts,html,css}' || rc=1
+  if [ -z "${1:-}" ] || [ "$1" = bestellen-frontend ]; then
+    echo "== prettier bestellen/frontend"
+    docker run --rm -e npm_config_cache=/tmp/npm -v "$R_REPO/bestellen/frontend":/w:ro -w /w "$TOOL_NODE" \
+      npx -y prettier@3.8.1 --check 'src/**/*.{ts,html,css}' || rc=1
+  fi
   return $rc
 }
 
-ci_unit() { # the unit tests run in the image builds; the reports are exported
+ci_unit() { # [container]: the unit tests run in the image builds; the reports are exported
   local v
+  case ${1:-} in
+    bestellen-frontend)
+      v=$(ver_get "$R_REPO" BESTELLEN_FRONTEND_VERSION); unit_from_dockerfile bestellen-frontend bestellen/frontend "" --build-arg "APP_VERSION=$v"; return ;;
+    bestellen-backend)
+      v=$(ver_get "$R_REPO" BESTELLEN_BACKEND_VERSION); unit_from_dockerfile bestellen-backend bestellen bestellen/backend/Dockerfile --build-arg "APP_VERSION=$v"; return ;;
+  esac
   v=$(ver_get "$R_REPO" BESTELLEN_FRONTEND_VERSION); unit_from_dockerfile bestellen-frontend bestellen/frontend "" --build-arg "APP_VERSION=$v"
   v=$(ver_get "$R_REPO" BESTELLEN_BACKEND_VERSION);  unit_from_dockerfile bestellen-backend bestellen bestellen/backend/Dockerfile --build-arg "APP_VERSION=$v"
   v=$(ver_get "$R_REPO" STUB_KITCHEN_VERSION);       unit_from_dockerfile stub-kitchen stubs/kitchen "" --build-arg "APP_VERSION=$v"
