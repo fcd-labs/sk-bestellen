@@ -5,6 +5,9 @@
 
 CI_COMPOSE_FILES="docker-compose.yml docker-compose.stubs.yml"
 CI_SUBPRODUCT_CONTAINERS="bestellen-frontend bestellen-backend"
+# The source of each container: unchanged version and code means the container skips its steps (own lifecycle).
+CI_CONTAINER_PATHS="bestellen-frontend=bestellen/frontend
+bestellen-backend=bestellen/backend bestellen/contracts bestellen/menu"
 # The contracts (and their compatibility rule) are in the configuration of the showcase (kind: Contract).
 # Contract checks in the integration step: name=spec@url (inside the network of the environment)
 CI_CONTRACT_TARGETS="bestellen-backend=bestellen/contracts/bestellen-api.openapi.yaml@http://bestellen-backend:8080
