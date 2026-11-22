@@ -1,6 +1,6 @@
 # Terugblik sk-1dp-mvp0
 
-Leren: de laatste stap van de cirkel (intentie, proces, product, leren).
+Leren: de laatste stap van de cirkel (intentie, delivery, product, leren).
 Datum: 15 november 2026. Way of working: CLAUDE.md. Intent: sk-1dp-mvp0.md.
 
 ## Wat is bereikt
