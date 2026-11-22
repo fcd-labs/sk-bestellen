@@ -65,7 +65,7 @@ object KeyResultEvent {
         }
         event.putObject("subject").apply {
             put("id", placed.order.orderId.toString())
-            put("source", "sk-demo")
+            put("source", "sk-bestellen")
             putObject("content").apply {
                 put("keyResult", KEY_RESULT)
                 put("orderId", placed.order.orderId.toString())

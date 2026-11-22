@@ -78,8 +78,8 @@ ci_freshness() { # facts only: one line "freshness|part|name|current|latest" per
     printf '%s\n' "$out" | grep -- ' -> ' | sed 's/^\[INFO\] *//' | awk 'NF { print "freshness|backend (maven)|" $1 "|" $(NF-2) "|" $NF }' | sort -u
   done
   echo "== npm frontend"
-  docker build -q --target build -t fcd-tmp/sk-demo-frontend-build "$R_REPO/bestellen/frontend" >/dev/null || failed=1
-  out=$(docker run --rm fcd-tmp/sk-demo-frontend-build npm outdated --parseable 2>/dev/null || true)
+  docker build -q --target build -t fcd-tmp/sk-bestellen-frontend-build "$R_REPO/bestellen/frontend" >/dev/null || failed=1
+  out=$(docker run --rm fcd-tmp/sk-bestellen-frontend-build npm outdated --parseable 2>/dev/null || true)
   # --parseable: dir:name@wanted:name@current:name@latest:dependent (names can be scoped: @scope/name)
   local npm_awk='function ver(f) { return substr(f, match(f, /@[^@]*$/) + 1) } function name(f) { return substr(f, 1, match(f, /@[^@]*$/) - 1) }'
   printf '%s\n' "$out" | awk -F: "$npm_awk"' NF { print "freshness|frontend (npm)|" name($3) "|" ver($3) "|" ver($4) }'

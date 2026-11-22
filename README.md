@@ -1,23 +1,23 @@
-# sk-demo
+# sk-bestellen
 
-Het product **ShowKitchen** in de showcase Demo van [Full Circle Delivery](https://fcd-labs.github.io/fcd/): de gast kiest uit een menu, en de bestelling gaat naar keuken, bar en kassa.
+Het deelproduct **Bestellen** van het product **ShowKitchen**, voor alle showcases van [Full Circle Delivery](https://fcd-labs.github.io/fcd/): de gast kiest uit een menu, en de bestelling gaat naar keuken, bar en kassa.
 
-Meer over deze showcase: https://fcd-labs.github.io/fcd/showcases/demo/
+Elke showcase legt in zijn eigen configuratie vast welke versie hij gebruikt, en werkt op zijn eigen lokale git-server. Zo delen Demo, Classic en Ideal één deelproduct en verschillen ze alleen in hun manier van werken. Eerste showcase: [Demo](https://fcd-labs.github.io/fcd/showcases/demo/).
 
 | | Wat |
 |---|---|
 | Deelproduct | **Bestellen**: frontend (Angular) en backend (Kotlin, Ktor) |
-| Stubs | keuken, bar en kassa: losse containers, geen onderdeel van Bestellen |
+| Stubs | keuken, bar en kassa: losse containers, geen onderdeel van Bestellen. Visie: elk deelproduct verzorgt een stub van zichzelf; tot keuken, bar en kassa eigen deelproducten zijn, staan hun stubs hier |
 | Intent | [sk-1dp-mvp0.md](sk-1dp-mvp0.md) — key result: elke bestelling van de gast komt aan bij keuken, bar en kassa |
 | Product | [showkitchen.md](showkitchen.md) |
 | Contracten | [order.openapi.yaml](contracts/order.openapi.yaml), [bestellen-api.openapi.yaml](bestellen/contracts/bestellen-api.openapi.yaml) |
 | Menu | [menu.yaml](bestellen/menu/menu.yaml), datamodel [menu.schema.json](bestellen/menu/menu.schema.json) |
-| Way of working | [fcd-demo](https://github.com/fcd-labs/fcd-demo) |
+| Way of working | per showcase, zoals [fcd-demo](https://github.com/fcd-labs/fcd-demo) |
 
 ## Zelf draaien
 
 Nodig: git, bash en een container-runtime met `docker` en `docker compose`. Alles draait lokaal.
-Clone deze repository naast [fcd-pipeline](https://github.com/fcd-labs/fcd-pipeline) en de andere repositories van [fcd-demo](https://github.com/fcd-labs/fcd-demo).
+Clone deze repository naast [fcd-pipeline](https://github.com/fcd-labs/fcd-pipeline) en de repository van een showcase, zoals [fcd-demo](https://github.com/fcd-labs/fcd-demo).
 
 ```bash
 ../fcd-pipeline/fcd check

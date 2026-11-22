@@ -1,10 +1,10 @@
-# sk-demo
+# sk-bestellen
 
-Het product ShowKitchen in de showcase Demo: deelproduct Bestellen, met stubs voor keuken, bar en kassa.
+Het deelproduct Bestellen van het product ShowKitchen, voor alle showcases (Demo, Classic, Ideal), met stubs voor keuken, bar en kassa. Eén eigenaar. Een showcase legt in zijn configuratie vast welke versie hij gebruikt.
 Wat voor alle repositories geldt staat in `../CLAUDE.md`. De way of working staat in `../fcd-demo/fcd-demo.md`; stappen, gates, drempels en afwijkingen in de configuratie `../fcd-demo/fcd/`. De intent staat in `sk-1dp-mvp0.md`.
 
 - Deelproduct Bestellen: containers `bestellen-frontend` (Angular) en `bestellen-backend` (Kotlin, Ktor, Maven). Releasen doen we op het deelproduct.
-- Stubs `stub-kitchen`, `stub-bar`, `stub-cash-register`: losse containers, niet onderdeel van Bestellen. Ze rollen mee uit, maar worden niet gereleased. De drie stubs hebben dezelfde code: een wijziging gaat drie keer.
+- Stubs `stub-kitchen`, `stub-bar`, `stub-cash-register`: losse containers, niet onderdeel van Bestellen. Visie: elk deelproduct verzorgt een stub van zichzelf; tot keuken, bar en kassa eigen deelproducten zijn, staan hun stubs hier. Ze rollen mee uit, maar worden niet gereleased. De drie stubs hebben dezelfde code: een wijziging gaat drie keer.
 - Contract first: `contracts/order.openapi.yaml` (de bestelling naar de stubs) en `bestellen/contracts/` (frontend–backend). Datamodel first: `bestellen/menu/menu.schema.json`.
 - Een menu wijzigen gaat via de pipeline (`bestellen/menu/menu.yaml`).
 - Elke wijziging: een regel in `CHANGELOG.md`. Een security-actie: ook een regel in `SECURITY.md`, in hetzelfde pull request.
