@@ -28,7 +28,7 @@ Wijzigingen van het deelproduct Bestellen, per versie. Formaat: [Keep a Changelo
 - Versheidscontrole: een reden per onderdeel (backend/maven, frontend/npm), zodat een afwijking alleen voor haar eigen onderdeel geldt.
 
 ### Opgelost
-- De versheidscontrole voor Maven zag niets (door `-q`). Nu gevonden: json-schema-validator een major-versie achter; afwijking EXP-002 tot 2026-12-31 (goedgekeurd door Johannes).
+- De versheidscontrole voor Maven zag niets (door `-q`). Nu gevonden: json-schema-validator een major-versie achter; afwijking EXP-002 tot 2026-12-31 (goedgekeurd door sim007).
 
 ## [0.2.0] - 2026-11-20
 

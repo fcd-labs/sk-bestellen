@@ -6,4 +6,4 @@ ShowKitchen is het product in elke showcase van Full Circle Delivery: [Demo](htt
 
 In de showcase Demo heeft ShowKitchen één deelproduct: **Bestellen** (intent: `sk-1dp-mvp0.md`). Keuken, bar en kassa bestaan als stubs.
 
-Het declaratieve bestand: [sk-demo.fcd.yaml](https://github.com/fcd-labs/fcd/blob/main/fcd/sk-demo.fcd.yaml).
+Het declaratieve bestand: [sk-bestellen.fcd.yaml](https://github.com/fcd-labs/fcd/blob/main/fcd/sk-bestellen.fcd.yaml).
