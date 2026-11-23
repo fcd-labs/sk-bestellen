@@ -12,6 +12,9 @@ Wijzigingen van het deelproduct Bestellen, per versie. Formaat: [Keep a Changelo
 - De adressen van keuken, bar en kassa staan als standaard in de backend; `docker-compose.yml` hoeft ze niet meer mee te geven (met `KITCHEN_URL`, `BAR_URL` en `CASH_REGISTER_URL` kun je ze nog overschrijven).
 - End-to-end: een test voor het kernpad (een bestelling plaatsen; de bevestiging, en doorgegeven aan keuken, bar en kassa), te kiezen met `@kernpad`.
 
+### Documentatie
+- README: hoe je ShowKitchen start (`fcd up` van een showcase, ook na een herstart), de eerste keer (`fcd demo reset`), status en stoppen.
+
 ## [0.4.0] - 2026-11-20
 
 ### Gewijzigd
