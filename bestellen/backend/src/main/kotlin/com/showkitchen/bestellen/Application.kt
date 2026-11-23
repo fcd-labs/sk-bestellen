@@ -42,7 +42,7 @@ import java.time.Clock
 internal val DEFAULT_RECEIVER_URLS =
     mapOf(
         Receiver.KITCHEN to "http://stub-kitchen:8080",
-        Receiver.BAR to "http://stub-baar:8080",
+        Receiver.BAR to "http://stub-bar:8080",
         Receiver.CASH_REGISTER to "http://stub-cash-register:8080",
     )
 

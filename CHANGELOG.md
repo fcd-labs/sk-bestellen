@@ -4,6 +4,11 @@ Wijzigingen van het deelproduct Bestellen, per versie. Formaat: [Keep a Changelo
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-21
+
+### Opgelost
+- Een bestelling kwam niet aan bij de bar: typfout in het standaardadres van de bar in de backend (`stub-baar` in plaats van `stub-bar`). Gevonden met het key result op het Dashboard (bar: rood). Een nieuwe unittest controleert de standaardadressen van keuken, bar en kassa. Backend 1.0.1.
+
 ## [1.0.0] - 2026-11-21
 
 ### Gewijzigd
